@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 const About: React.FC = () => {
   const [showFullText, setShowFullText] = useState(false);
 
-  const fullText = `Nestled in the heart of Kalkuzhy, Thrissur, Bappuji Kala Kayika Samskarika Vedhi (Bappuji Arts, Sports, and Cultural Forum) is a vibrant community hub dedicated to enriching lives and fostering unity.
+  const fullText = `Bappuji Kala Kayika Samskarika Vedhi (Bappuji Arts, Sports & Cultural Forum) is a vibrant community forum rooted in the heart of Kalkuzhy, Thrissur.
               <br /><br />
-              With roots tracing back to the late 1970s and a proud re-establishment in 2014, we stand as a beacon of secular and democratic values, driving the holistic growth of our village, especially its youth.
+              Established in the late 1970s and proudly re-established in 2014, we continue to stand as a beacon of secular and democratic values, committed to the holistic growth of our village and its people,especially the youth.
               <br /><br />
-              Through a colorful blend of artistic initiatives, sporting events, cultural celebrations, and dedicated social service, we aim to nurture talent, spark creativity, and strengthen the bonds that make our community thrive.
+              Our initiatives span across arts, sports, culture, and social service, creating opportunities to nurture talent, inspire creativity, and strengthen community bonds. From lively festivals and competitions to meaningful service projects, we bring people together in the spirit of unity and progress.
               <br /><br />
-              Together, we are shaping a more connected, engaged, and forward-thinking Kalkuzhy , where every voice matters and every effort counts.`;
+              At Bappuji Kala Kayika Samskarika Vedhi, we believe every voice matters and every effort counts. Together, we are building a more connected, engaged, and forward-thinking Kalkuzhy.`;
 
   const words = fullText.split(/\s+/);
   const shortText = words.slice(0, 60).join(' ');
