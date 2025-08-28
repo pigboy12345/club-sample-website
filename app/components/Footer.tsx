@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
               <a href="https://facebook.com/bappujikalkuzhy" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
                 <Facebook size={20} />
               </a>
-              <a href="https://instagram.com/bappuji_kalkuzhy" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
+              <a href="https://www.instagram.com/bappujikalkuzhy?igsh=MXRieWg2NDJodzZkcg==" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
                 <Instagram size={20} />
               </a>
               <a href="https://wa.me/qr/N3TH3LTNAH7HN1" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
