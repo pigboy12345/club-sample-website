@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row text-center justify-between items-center">
+          <div className="flex flex-col md:flex-row text-center justify-center items-center">
             <p className="text-gray-400 text-sm">
               © 2025 Bappuji Kala Kayika Samskarika Vedhi. All Rights Reserved <br />| Registered under Act 12 of 1955 | Affiliated with Kerala Youth Welfare Board & MY Bharat | Darpan Registered | Banking Partner: South Indian Bank.
             </p>
