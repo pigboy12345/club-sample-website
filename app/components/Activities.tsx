@@ -31,10 +31,10 @@ const Activities: React.FC = () => {
   return (
     <section id="activities" className="py-20 bg-gradient-to-br from-teal-50 via-blue-50 to-cyan-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-12 text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
           ACTIVITIES
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {activities.map((activity, index) => (
             <div
@@ -48,15 +48,15 @@ const Activities: React.FC = () => {
                   className="w-full h-40 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              
+
               <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight">
                 {activity.title}
               </h3>
-              
+
               <p className="text-gray-700 mb-6 text-sm leading-relaxed">
                 {activity.description}
               </p>
-              
+
               <button className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg w-full">
                 Read More
               </button>

@@ -1,6 +1,9 @@
 "use client"
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import Image from 'next/image';
+
+
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,12 +24,13 @@ const Header: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-lg">B</span>
+              {/* <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-blue-600 rounded-lg flex items-center justify-center mr-3"> */}
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                <Image src="/bappuji.png" alt="Logo" width={30} height={30} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">BAPPUJI</h1>
-                <p className="text-xs text-gray-600">FROM HOPE TO HEIGHTS TO THRIVE</p>
+                <h1 className="text-xl font-black tracking-[0.3em] text-black">BAPPUJI</h1>
+                <p className="text-[8px] font-bold text-gray-500">FROM HOPE TO HEIGHTS TO THRIVE</p>
               </div>
             </div>
           </div>
