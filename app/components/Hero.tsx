@@ -11,14 +11,14 @@ const Hero: React.FC = () => {
           Celebrating Culture. Inspiring Growth.
         </p>
         <button className="bg-slate-700 hover:bg-slate-800 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-          Explore Our Work
+          Let's Begin
         </button>
       </div>
-      
+
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-teal-200 rounded-full opacity-20 animate-bounce"></div>
-      <div className="absolute bottom-20 right-10 w-16 h-16 bg-blue-200 rounded-full opacity-20 animate-bounce" style={{animationDelay: '1s'}}></div>
-      <div className="absolute top-1/2 left-20 w-12 h-12 bg-cyan-200 rounded-full opacity-20 animate-bounce" style={{animationDelay: '2s'}}></div>
+      <div className="absolute bottom-20 right-10 w-16 h-16 bg-blue-200 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-20 w-12 h-12 bg-cyan-200 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '2s' }}></div>
     </section>
   );
 };

@@ -24,14 +24,7 @@ const Header: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              {/* <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-blue-600 rounded-lg flex items-center justify-center mr-3"> */}
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
-                <Image src="/bappuji.png" alt="Logo" width={30} height={30} />
-              </div>
-              <div>
-                <h1 className="text-xl font-black tracking-[0.3em] text-black">BAPPUJI</h1>
-                <p className="text-[8px] font-bold text-gray-500">FROM HOPE TO HEIGHTS TO THRIVE</p>
-              </div>
+             <Image src="/bappuji_main_logo_enhanced.png" alt="Logo" width={200} height={100} />
             </div>
           </div>
 

@@ -1,55 +1,37 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import Image from 'next/image';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
           {/* Logo and Description */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
-                <Image src="/bappuji.png" alt="Logo" width={30} height={30} />
-              </div>
-              <div>
-                <h1 className="text-xl font-black tracking-[0.3em]">BAPPUJI</h1>
-                <p className="text-[8px] font-bold text-gray-400">FROM HOPE TO HEIGHTS TO THRIVE</p>
-              </div>
+              <Image src="/bappuji_main_logo_enhanced.png" alt="Logo" width={200} height={100} />
             </div>
             <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
               Empowering communities through arts, sports, culture, and social service.
               Building a brighter future for Kalkuzhy and beyond.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
+              <a href="https://facebook.com/bappujikalkuzhy" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
+              <a href="https://instagram.com/bappuji_kalkuzhy" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
-                <Twitter size={20} />
+              <a href="https://wa.me/qr/N3TH3LTNAH7HN1" target="_blank" className="bg-gray-800 p-3 rounded-full hover:bg-teal-600 transition-colors duration-300">
+                <FaWhatsapp size={20} />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
-            <ul className="space-y-3">
-              {['Home', 'About', 'Mission & Vision', 'Activities', 'Gallery', 'Contact'].map((item) => (
-                <li key={item}>
-                  <a href={`#${item.toLowerCase().replace(' & ', '-').replace(' ', '')}`}
-                    className="text-gray-300 hover:text-teal-400 transition-colors duration-300">
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+
 
           {/* Contact Info */}
           <div>
@@ -72,6 +54,35 @@ const Footer: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Quick Links */}
+          <div className='border-2 border-white rounded-lg'>
+            <iframe
+              title="google-maps"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15696.52135037926!2d76.35140208172456!3d10.41122154002795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7fdbd3d843231%3A0x971a17089998cc35!2sBappuji%20Kala%20Kayika%20Samskarika%20Vedhi!5e0!3m2!1sen!2sin!4v1756402096082!5m2!1sen!2sin"
+              width="600"
+              height="450"
+              style={{ border: 3, borderColor: 'white' }}
+              // allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="border-0 w-full h-full"
+            ></iframe>
+
+
+
+            {/* <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
+            <ul className="space-y-3">
+              {['Home', 'About', 'Mission & Vision', 'Activities', 'Gallery', 'Contact'].map((item) => (
+                <li key={item}>
+                  <a href={`#${item.toLowerCase().replace(' & ', '-').replace(' ', '')}`}
+                    className="text-gray-300 hover:text-teal-400 transition-colors duration-300">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul> */}
+          </div>
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
@@ -79,14 +90,6 @@ const Footer: React.FC = () => {
             <p className="text-gray-400 text-sm">
               © 2025 Bappuji Kala Kayika Samskarika Vedhi. All Rights Reserved <br />| Registered under Act 12 of 1955 | Affiliated with Kerala Youth Welfare Board & MY Bharat | Darpan Registered | Banking Partner: South Indian Bank.
             </p>
-            {/* <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-teal-400 text-sm transition-colors duration-300">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-teal-400 text-sm transition-colors duration-300">
-                Terms of Service
-              </a>
-            </div> */}
           </div>
         </div>
       </div>
