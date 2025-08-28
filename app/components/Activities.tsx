@@ -3,8 +3,8 @@ import React from 'react';
 const Activities: React.FC = () => {
   const activities = [
     {
-      title: 'SPORTS TOURNAMENTS',
-      description: 'Sports tournaments and events admin',
+      title: 'SPORTS & RECREATION',
+      description: 'Organizing and managing a variety of sports tournaments, events, and recreational activities for all age groups.',
       image: 'https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?auto=compress&cs=tinysrgb&w=500',
       color: 'from-red-100 to-orange-100'
     },

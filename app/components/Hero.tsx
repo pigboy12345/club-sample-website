@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 
 const Hero: React.FC = () => {
@@ -10,8 +11,8 @@ const Hero: React.FC = () => {
         <p className="text-xl sm:text-2xl text-gray-700 mb-8 leading-relaxed">
           Celebrating Culture. Inspiring Growth.
         </p>
-        <button className="bg-slate-700 hover:bg-slate-800 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-          Let's Begin
+        <button onClick={() => window.location.href = '#about'} className="bg-slate-700 hover:bg-slate-800 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+          About Us
         </button>
       </div>
 
