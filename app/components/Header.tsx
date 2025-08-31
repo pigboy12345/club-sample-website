@@ -9,12 +9,15 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Mission & Vision', href: '#mission' },
-    { name: 'Activities', href: '#activities' },
-    { name: 'Gallery', href: '#gallery' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '/#home' },
+    { name: 'About', href: '/#about' },
+    { name: 'Mission & Vision', href: '/#mission' },
+    { name: 'Activities', href: '/#activities' },
+    { name: 'Gallery', href: '/#gallery' },
+    // { name: 'Announcements', href: '/announcements' },
+    // { name: 'Leaders', href: '/leaders' },
+    // { name: 'Posts', href: '/posts' },
+    { name: 'Contact', href: '/#contact' },
   ];
 
   return (

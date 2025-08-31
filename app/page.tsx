@@ -1,9 +1,7 @@
 import React from 'react';
-import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
 import Activities from './components/Activities';
-import Footer from './components/Footer';
 import MissionVision from './components/MissionVision';
 import Gallery from './components/Gallery';
 import Contact from './components/Contact';
@@ -12,18 +10,14 @@ import Contact from './components/Contact';
 // Specifically look for client components, the use of hooks (like useState or useEffect), and any direct DOM manipulation
 function Home() {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <main className="pt-16">
-        <Hero />
-        <About />
-        <MissionVision />
-        <Activities />
-        <Gallery />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <main className="pt-16">
+      <Hero />
+      <About />
+      <MissionVision />
+      <Activities />
+      <Gallery />
+      <Contact />
+    </main>
   );
 }
 

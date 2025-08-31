@@ -36,7 +36,7 @@ Our seminars and training programs cover a wide range of topics such as self- em
 We also conduct football camps, karate training, and dance practice sessions, promoting physical fitness, discipline, and teamwork alongside creative expression.
 <br/><br/>
 Through these initiatives, we aim to create a generation that is skilled, confident, and ready to lead our community toward a brighter future.`,
-      image: 'https://images.pexels.com/photos/1595391/pexels-photo-1595391.jpeg?auto=compress&cs=tinysrgb&w=500',
+      image: 'https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop',
       color: 'from-green-100 to-emerald-100'
     },
     {
@@ -51,7 +51,7 @@ Our members actively participate in volunteering efforts during wildfires and th
 We also organize clean-up drives like the “Clean Muniyattu Kunnu” program, promoting environmental care and community responsibility.
 <br/><br/>
 These collective efforts reflect our belief in unity, compassion, and social responsibility, creating a stronger and more connected Kalkuzhy.`,
-      image: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=500',
+      image: 'https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop',
       color: 'from-blue-100 to-cyan-100'
     }
   ];
