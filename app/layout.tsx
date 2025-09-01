@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import NotificationBell from './components/NotificationBell';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,10 @@ export default function RootLayout({
       >
         <div className="min-h-screen bg-white">
           <Header />
+          <div className="fixed top-20 right-0 z-50">
+            <NotificationBell />
+          </div>
+
           {children}
           <Footer />
         </div>

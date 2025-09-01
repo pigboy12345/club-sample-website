@@ -6,7 +6,7 @@ const About: React.FC = () => {
 
   const fullText = `Bappuji Kala Kayika Samskarika Vedhi (Bappuji Arts, Sports & Cultural Forum) is a vibrant community forum rooted in the heart of Kalkuzhy, Thrissur.
               <br /><br />
-              Established in the late 1970s and proudly re-established in 2014, we continue to stand as a beacon of secular and democratic values, committed to the holistic growth of our village and its people,especially the youth.
+              Established in the late 1970s and proudly re-established in 2014, we continue to stand as a beacon of secular and democratic values, committed to the holistic growth of our village and its people,especially youth.
               <br /><br />
               Our initiatives span across arts, sports, culture, and social service, creating opportunities to nurture talent, inspire creativity, and strengthen community bonds. From lively festivals and competitions to meaningful service projects, we bring people together in the spirit of unity and progress.
               <br /><br />
