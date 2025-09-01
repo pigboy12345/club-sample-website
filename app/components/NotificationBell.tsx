@@ -25,7 +25,7 @@ const NotificationBell = () => {
       onMouseLeave={() => setIsHovering(false)}
     >
       <Link href="/announcements" passHref>
-        <button className="relative hover:text-gray-800 bg-white shadow-md hover:shadow-lg rounded-lg px-4 py-1 text-gray-600  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-teal-500">
+        <button className="relative hover:text-gray-800 bg-white shadow-md hover:shadow-lg rounded-lg px-4 py-2 text-gray-600  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-teal-500">
           <Bell className="h-6 w-6" />
         </button>
       </Link>

@@ -21,13 +21,13 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="bg-white shadow-sm fixed w-full top-0 z-50">
+    <header className="bg-white shadow-sm fixed w-full top-0 z-55">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-             <Image src="/bappuji_main_logo_enhanced.png" alt="Logo" width={200} height={100} />
+              <Image src="/bappuji_main_logo_enhanced.png" alt="Logo" width={200} height={100} />
             </div>
           </div>
 

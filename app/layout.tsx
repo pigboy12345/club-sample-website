@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <div className="min-h-screen bg-white">
           <Header />
-          <div className="fixed top-20 right-0 z-50">
+          <div className="fixed top-20 right-0 z-40">
             <NotificationBell />
           </div>
 
