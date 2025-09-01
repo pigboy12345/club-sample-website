@@ -4,12 +4,18 @@ import React, { useState } from 'react';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import { announcements } from '../data/announcements';
+import { usePathname } from 'next/navigation';
 
 const NotificationBell = () => {
   const [isHovering, setIsHovering] = useState(false);
+  const pathname = usePathname();
 
   const truncate = (str: string, numWords: number) => {
     return str.split(" ").splice(0, numWords).join(" ");
+  }
+
+  if (pathname === '/announcements') {
+    return null;
   }
 
   return (
