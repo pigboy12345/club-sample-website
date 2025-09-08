@@ -57,6 +57,33 @@ export const leaders = [
     achievements: ['Sports Development Award 2023', 'Youth Athletics Champion']
   },
   {
+    name: 'Arun Krishnan',
+    position: 'Executive Committee Member',
+    image: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
+    email: 'arun@bappuji.org',
+    phone: '+91 9876543214',
+    experience: '14 years in sports development',
+    achievements: ['Sports Development Award 2023', 'Youth Athletics Champion']
+  },
+  {
+    name: 'Arun Krishnan',
+    position: 'Executive Committee Member',
+    image: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
+    email: 'arun@bappuji.org',
+    phone: '+91 9876543214',
+    experience: '14 years in sports development',
+    achievements: ['Sports Development Award 2023', 'Youth Athletics Champion']
+  },
+  {
+    name: 'Meera Thomas',
+    position: 'Action Council Member',
+    image: 'https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
+    email: 'meera@bappuji.org',
+    phone: '+91 9876543215',
+    experience: '11 years in cultural programs',
+    achievements: ['Cultural Heritage Award 2022', 'Traditional Arts Preservation']
+  },
+  {
     name: 'Meera Thomas',
     position: 'Action Council Member',
     image: 'https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop',
