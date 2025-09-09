@@ -7,32 +7,61 @@ import { activities, Activity } from "../data/activities";
 const ActivityCard: React.FC<{
   activity: Activity;
   onReadMore: () => void;
-}> = ({ activity, onReadMore }) => (
-  <div
-    className={`bg-gradient-to-br ${activity.color} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group`}
-  >
-    <div className="aspect-w-16 aspect-h-10 mb-6">
-      <img
-        src={activity.image}
-        alt={activity.title}
-        className="w-full h-40 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
-      />
-    </div>
-    <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight">
-      {activity.title}
-    </h3>
-    <p className="text-gray-700 mb-6 text-sm leading-relaxed">
-      {activity.description}
-    </p>
-    <button
-      onClick={onReadMore}
-      className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg w-full"
-      aria-label={`Read more about ${activity.title}`}
+}> = ({ activity, onReadMore }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div
+      className={`bg-gradient-to-br ${activity.color} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group`}
     >
-      Read More
-    </button>
-  </div>
-);
+      <div className="aspect-w-16 aspect-h-10 mb-6">
+        <img
+          src={activity.image}
+          alt={activity.title}
+          className="w-full h-40 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight">
+        {activity.title}
+      </h3>
+      <p className="text-gray-700 mb-6 text-sm leading-relaxed">
+        {activity.description.split(" ").length > 5 ? (
+          <>
+            {expanded ? activity.description : activity.description.split(" ").slice(0, 5).join(" ") + "..."}
+            {!expanded && (
+              <button
+                className="text-teal-600 underline ml-1"
+                onClick={() => setExpanded(true)}
+                type="button"
+              >
+                more
+              </button>
+            )}
+            {expanded && (
+              <button
+                className="text-teal-600 underline ml-1"
+                onClick={() => setExpanded(false)}
+                type="button"
+              >
+                less
+              </button>
+            )}
+
+          </>
+        ) : (
+          activity.description
+        )}
+      </p>
+      <button
+        onClick={onReadMore}
+        className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg w-full"
+        aria-label={`Read more about ${activity.title}`}
+      >
+        Read More
+      </button>
+    </div>
+  );
+};
 
 // Modal popup
 const ActivityModal: React.FC<{
