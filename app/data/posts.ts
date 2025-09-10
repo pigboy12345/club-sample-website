@@ -7,10 +7,7 @@ export const posts = [
       author: 'Meera Thomas',
       date: '2025-01-10',
       image: 'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-      category: 'Culture',
-      likes: 45,
-      comments: 12,
-      views: 234
+  category: 'Culture'
     },
     {
       id: 2,
@@ -20,10 +17,7 @@ export const posts = [
       author: 'Arun Krishnan',
       date: '2025-01-08',
       image: 'https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-      category: 'Youth',
-      likes: 67,
-      comments: 18,
-      views: 456
+  category: 'Youth'
     },
     {
       id: 3,
@@ -33,10 +27,7 @@ export const posts = [
       author: 'Priya Nair',
       date: '2025-01-05',
       image: 'https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-      category: 'Service',
-      likes: 89,
-      comments: 25,
-      views: 678
+  category: 'Service'
     },
     {
       id: 4,
@@ -46,10 +37,7 @@ export const posts = [
       author: 'Rajesh Kumar',
       date: '2025-01-03',
       image: 'https://images.pexels.com/photos/163444/sport-tug-of-war-team-effort-163444.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-      category: 'Sports',
-      likes: 52,
-      comments: 15,
-      views: 389
+  category: 'Sports'
     },
     {
       id: 5,
@@ -59,10 +47,7 @@ export const posts = [
       author: 'Suresh Menon',
       date: '2025-01-01',
       image: 'https://images.pexels.com/photos/1072179/pexels-photo-1072179.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-      category: 'Environment',
-      likes: 73,
-      comments: 20,
-      views: 512
+  category: 'Environment'
     },
     {
       id: 6,
@@ -72,9 +57,6 @@ export const posts = [
       author: 'Lakshmi Pillai',
       date: '2024-12-28',
       image: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-      category: 'Empowerment',
-      likes: 94,
-      comments: 31,
-      views: 723
+  category: 'Empowerment'
     }
   ];

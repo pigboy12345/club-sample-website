@@ -1,8 +1,36 @@
 import React from 'react';
 import { Bell, Calendar, Clock, Pin, AlertCircle } from 'lucide-react';
-import { announcements } from '../data/announcements';
+import { supabase } from '../../lib/supabaseClient';
+import { announcements as staticAnnouncements } from '../data/announcements';
+import type { Announcement } from '../../types';
 
-const Announcements = () => {
+async function getAnnouncements(): Promise<Announcement[]> {
+  if (!supabase) return staticAnnouncements.map(a => ({
+    id: a.id,
+    title: a.title,
+    content: a.content,
+    date: a.date,
+    time: a.time,
+    type: a.type,
+    priority: a.priority as any,
+    is_pinned: a.isPinned
+  }));
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*')
+    .order('is_pinned', { ascending: false })
+    .order('date', { ascending: false })
+    .limit(50);
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.error('Supabase announcements error', error.message);
+    return [];
+  }
+  return data as Announcement[];
+}
+
+const Announcements = async () => {
+  const announcements = await getAnnouncements();
 
   const getTypeColor = (type: string) => {
     const colors = {
@@ -31,8 +59,8 @@ const Announcements = () => {
     });
   };
 
-  const pinnedAnnouncements = announcements.filter(ann => ann.isPinned);
-  const regularAnnouncements = announcements.filter(ann => !ann.isPinned);
+  const pinnedAnnouncements = announcements.filter(ann => ann.is_pinned);
+  const regularAnnouncements = announcements.filter(ann => !ann.is_pinned);
 
   return (
     <main className="pt-16">
@@ -90,7 +118,7 @@ const Announcements = () => {
                         </div>
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-2" />
-                          {announcement.time}
+                            {announcement.time}
                         </div>
                       </div>
                     </div>

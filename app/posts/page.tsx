@@ -1,9 +1,47 @@
 import React from 'react';
 import { FileText, Calendar, User, Heart, MessageCircle, Share2, Eye } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
+import { posts as staticPosts } from '../data/posts';
+import type { Post, Category } from '../../types';
 
-import { posts } from '../data/posts';
+async function getPosts(): Promise<Post[]> {
+  if (!supabase) return staticPosts.map(p => ({
+    id: p.id,
+    title: p.title,
+    excerpt: p.excerpt,
+    content: p.content,
+    author: p.author,
+    date: p.date,
+    image: p.image,
+    category_id: 0,
+    category: { id: 0, name: p.category }
+  }));
 
-const Posts = () => {
+  const { data, error } = await supabase
+    .from('posts')
+  .select('id,title,excerpt,content,author,date,image,category_id, categories ( id, name )')
+    .order('date', { ascending: false })
+    .limit(20);
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.error('Supabase posts error', error.message);
+    return [];
+  }
+  return (data || []).map((row: any) => ({
+    id: row.id,
+    title: row.title,
+    excerpt: row.excerpt,
+    content: row.content,
+    author: row.author,
+    date: row.date,
+    image: row.image,
+    category_id: row.category_id,
+    category: row.categories as Category
+  }));
+}
+
+const Posts = async () => {
+  const posts = await getPosts();
   
   const getCategoryColor = (category: string) => {
     const colors = {
@@ -62,8 +100,8 @@ const Posts = () => {
                   </div>
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(post.category)}`}>
-                        {post.category}
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(post.category?.name || 'General')}`}>
+                        {post.category?.name || 'General'}
                       </span>
                       <div className="flex items-center text-sm text-gray-500">
                         <Calendar className="w-4 h-4 mr-1" />
@@ -86,18 +124,7 @@ const Posts = () => {
                       </div>
 
                       <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-1 text-sm text-gray-500">
-                          <Eye className="w-4 h-4" />
-                          <span>{post.views}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 text-sm text-gray-500">
-                          <Heart className="w-4 h-4" />
-                          <span>{post.likes}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 text-sm text-gray-500">
-                          <MessageCircle className="w-4 h-4" />
-                          <span>{post.comments}</span>
-                        </div>
+                        {/* Removed likes/comments/views */}
                         <button className="text-gray-400 hover:text-blue-600 transition-colors">
                           <Share2 className="w-4 h-4" />
                         </button>
@@ -110,8 +137,8 @@ const Posts = () => {
 
             {/* Load More Button */}
             <div className="text-center mt-12">
-              <button className="bg-slate-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
-                Load More Posts
+              <button className="bg-slate-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105" disabled>
+                Load More (coming soon)
               </button>
             </div>
           </div>
