@@ -1,5 +1,7 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 const Hero: React.FC = () => {
   return (
@@ -11,9 +13,14 @@ const Hero: React.FC = () => {
         <p className="text-xl sm:text-2xl text-gray-700 mb-8 leading-relaxed">
           Celebrating Culture. Inspiring Growth.
         </p>
-        <button onClick={() => window.location.href = '#about'} className="bg-slate-700 hover:bg-slate-800 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+        {/* <button onClick={() => window.location.href = '#about'} className="bg-slate-700 hover:bg-slate-800 text-white px-8 py-2 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
           About Us
+        </button> */}
+        <Link href="/posts" passHref>
+          <button className="text-slate-600 px-9 hover:text-teal-600 py-3 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+          Explore Now...!
         </button>
+        </Link>
       </div>
 
       {/* Decorative elements */}
