@@ -33,7 +33,7 @@ export interface Announcement {
 
 export interface GalleryItem {
   id: number;
-  filename: string;
+  filename?: string | null;
   src: string; // URL
   created_at?: string;
 }

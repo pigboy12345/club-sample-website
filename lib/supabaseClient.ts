@@ -10,5 +10,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false } })
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        // Persist session only in the browser so admins stay logged in.
+        persistSession: typeof window !== 'undefined',
+        autoRefreshToken: true,
+      },
+    })
   : (null as any);
