@@ -17,18 +17,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     let active = true;
+    async function getReadyUser(retries = 3, delayMs = 150) {
+      for (let i = 0; i < retries; i++) {
+        await supabase.auth.getSession();
+        const { data } = await supabase.auth.getUser();
+        const user = data?.user || null;
+        if (user) return user;
+        if (i < retries - 1) await new Promise((r) => setTimeout(r, delayMs));
+      }
+      const { data } = await supabase.auth.getUser();
+      return data?.user || null;
+    }
     async function check() {
       if (!supabase) {
         setLoading(false);
         return;
       }
-      // Ensure we exchange the code from magic-link redirects
-      try {
-        await supabase.auth.getSession();
-      } catch {}
-      const { data } = await supabase.auth.getUser();
-      if (!active) return;
-      const user = data?.user || null;
+  // Warm session and retry briefly to avoid false negatives on refresh
+  const user = await getReadyUser();
+  if (!active) return;
       const userEmail = user?.email?.toLowerCase() ?? null;
       setEmail(userEmail);
       // If not logged in, go to login
@@ -37,26 +44,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         setLoading(false);
         return;
       }
-      // If logged in but not allowed, sign out and block
-      if (userEmail && allowed.length > 0 && !allowed.includes(userEmail)) {
-        await supabase.auth.signOut();
-        router.replace('/admin/login');
+      // If logged in and trying to view the login page, send to posts
+      if (user && pathname === '/admin/login') {
+        router.replace('/admin/');
         setLoading(false);
         return;
       }
-      // Clean magic-link params after exchange
-      try {
-        if (typeof window !== 'undefined') {
-          const sp = new URLSearchParams(window.location.search);
-          if (sp.has('code') || sp.has('type')) {
-            router.replace(pathname);
-          }
-        }
-      } catch {}
+      // If logged in but not allowed, sign out and block
+      if (userEmail && allowed.length > 0 && !allowed.includes(userEmail)) {
+        await supabase.auth.signOut();
+        // onAuthStateChange handler below will handle redirect after sign-out
+        setLoading(false);
+        return;
+      }
       setLoading(false);
     }
     check();
-    const { data: sub } = supabase?.auth.onAuthStateChange(() => check()) || { data: null };
+    // Respond immediately to auth changes to avoid redirect races
+    const { data: sub } =
+      supabase?.auth.onAuthStateChange(async (event: string) => {
+        if (event === 'SIGNED_OUT') {
+          setEmail(null);
+          // Ensure we land on login page after logout
+          if (pathname !== '/admin/login') {
+            router.replace('/admin/login');
+          } else {
+            // If already on login, just refresh state
+            router.refresh();
+          }
+          return;
+        }
+        if (event === 'SIGNED_IN') {
+          // After successful sign in, avoid staying on login page
+          if (pathname === '/admin/login') {
+            router.replace('/admin/');
+            return;
+          }
+        }
+        // Fallback to guard check on other events (TOKEN_REFRESHED, USER_UPDATED, etc.)
+        check();
+      }) || { data: null };
     return () => {
       active = false;
       sub?.subscription.unsubscribe();
@@ -66,7 +93,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-900">Loading…</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 py-8">
       <header className="fixed top-0 inset-x-0 h-14 bg-white border-b z-20">
         <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-4">
           <nav className="flex items-center gap-4 text-sm">
@@ -80,7 +107,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {email ? (
               <button
                 className="px-3 py-1.5 rounded border hover:bg-gray-50"
-                onClick={async () => { await supabase?.auth.signOut(); router.replace('/admin/login'); }}
+                onClick={async () => {
+                  // Only sign out; auth listener will handle navigation to login
+                  await supabase?.auth.signOut();
+                }}
               >Logout</button>
             ) : (
               <Link href="/admin/login" className="px-3 py-1.5 rounded border hover:bg-gray-50">Login</Link>

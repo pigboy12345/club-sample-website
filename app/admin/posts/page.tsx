@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import type { Post, Category } from '../../../types';
 import { useRouter } from 'next/navigation';
+import { uploadImageToBucket, DEFAULT_BUCKET } from '../../../lib/upload';
 
 export default function AdminPosts() {
   const router = useRouter();
@@ -15,6 +16,9 @@ export default function AdminPosts() {
   const [authed, setAuthed] = useState<boolean>(false);
   const [newCatName, setNewCatName] = useState<string>('');
   const [addingCat, setAddingCat] = useState<boolean>(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   async function load() {
     if (!supabase) {
@@ -24,14 +28,16 @@ export default function AdminPosts() {
     }
     setLoading(true);
     try {
+      // Warm session to avoid redirecting before Supabase restores the session on refresh
+      await supabase.auth.getSession();
       const { data: sessionData } = await supabase.auth.getUser();
       if (!sessionData?.user) {
         setAuthed(false);
         setLoading(false);
-        router.replace('/admin/login');
-        return;
+        return; // Admin layout will handle redirect if needed
       }
       setAuthed(true);
+      setUserId(sessionData.user.id);
       const [{ data: posts, error: e1 }, { data: categories, error: e2 }] = await Promise.all([
         supabase.from('posts').select('*').order('date', { ascending: false }),
         supabase.from('categories').select('*').order('name'),
@@ -49,11 +55,26 @@ export default function AdminPosts() {
   }
 
   useEffect(() => { 
-    console.log('Loading posts and categories');
-    load().then(() => {
-      console.log('Posts and categories loaded');
-    })
-    ; }, []);
+    load();
+  }, []);
+
+  async function onImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setUploading(true);
+    const localUrl = URL.createObjectURL(file);
+    setPreviewUrl(localUrl);
+    try {
+  const { publicUrl } = await uploadImageToBucket(DEFAULT_BUCKET, file, userId ?? undefined, 'posts');
+      setForm((prev) => ({ ...prev, image: publicUrl }));
+    } catch (err: any) {
+      setError(err?.message || 'Image upload failed');
+      setPreviewUrl(null);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function addCategory() {
     setError(null);
@@ -104,6 +125,7 @@ export default function AdminPosts() {
         if (error) throw error;
       }
       setForm({ title: '', excerpt: '', content: '', author: '', date: new Date().toISOString().slice(0,10), image: '', category_id: cats[0]?.id || 0 });
+      setPreviewUrl(null);
       setEditingId(null);
       await load();
     } catch (err: any) {
@@ -118,45 +140,67 @@ export default function AdminPosts() {
     await load();
   }
 
+  function goBack() {
+    if (typeof window !== 'undefined' && window.history.length > 1) router.back();
+    else router.push('/admin');
+  }
+
+  if (loading) {
+    return <div className="min-h-[50vh] flex items-center justify-center text-gray-900">Loading…</div>;
+  }
+
+  if (!authed) {
+    return <div className="min-h-[50vh] flex items-center justify-center text-gray-900">Please log in…</div>;
+  }
+
   return (
-    <div className="space-y-6">
-  <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
-      <form onSubmit={save} className="grid gap-3 border rounded p-4 bg-white">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
+        <button
+          type="button"
+          onClick={goBack}
+          className="px-3 py-2 rounded border border-gray-300 text-gray-800 hover:bg-gray-50"
+        >
+          Back
+        </button>
+      </div>
+      <form onSubmit={save} className="grid gap-4 border rounded-lg p-6 md:p-8 bg-white">
         <input
-          className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
+          className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
           placeholder="Title"
           value={form.title||''}
           onChange={(e)=>setForm({ ...form, title: e.target.value })}
           required
         />
         <input
-          className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
+          className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
           placeholder="Excerpt"
           value={form.excerpt||''}
           onChange={(e)=>setForm({ ...form, excerpt: e.target.value })}
         />
         <textarea
-          className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
+          className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
           placeholder="Content"
           value={form.content||''}
           onChange={(e)=>setForm({ ...form, content: e.target.value })}
         />
         <div className="grid sm:grid-cols-3 gap-3">
           <input
-            className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
+            className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
             placeholder="Author"
             value={form.author||''}
             onChange={(e)=>setForm({ ...form, author: e.target.value })}
           />
           <input
-            className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
+            className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
             type="date"
             value={form.date||''}
             onChange={(e)=>setForm({ ...form, date: e.target.value })}
           />
           <div className="flex gap-2">
             <select
-              className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700 flex-1"
+              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700 flex-1"
               value={form.category_id||0}
               onChange={(e)=>setForm({ ...form, category_id: Number(e.target.value) })}
             >
@@ -167,7 +211,7 @@ export default function AdminPosts() {
         </div>
         <div className="grid sm:grid-cols-[1fr_auto] gap-3">
           <input
-            className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
+            className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
             placeholder="New category name"
             value={newCatName}
             onChange={(e)=>setNewCatName(e.target.value)}
@@ -176,20 +220,31 @@ export default function AdminPosts() {
             type="button"
             onClick={addCategory}
             disabled={addingCat || !newCatName.trim()}
-            className="bg-gray-800 hover:bg-gray-900 disabled:opacity-50 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white"
+            className="bg-gray-800 hover:bg-gray-900 disabled:opacity-50 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white"
           >
             {addingCat ? 'Adding…' : 'Add Category'}
           </button>
         </div>
-        <input
-          className="border border-gray-500 rounded px-3 py-2 bg-white text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-700"
-          placeholder="Image URL"
-          value={form.image||''}
-          onChange={(e)=>setForm({ ...form, image: e.target.value })}
-        />
+        <div className="grid sm:grid-cols-[1fr_auto] gap-3 items-start">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-900">Upload image to Storage</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onImageSelect}
+              className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900"
+            />
+            <p className="text-xs text-gray-700">Bucket: {DEFAULT_BUCKET} • Folder: posts. A public URL will be saved with the post.</p>
+          </div>
+          <div className="justify-self-end">
+            {(previewUrl || form.image) && (
+              <img src={(previewUrl || form.image) as string} alt="Preview" className="w-28 h-28 object-cover rounded border" />
+            )}
+          </div>
+        </div>
         <div className="flex gap-2">
-          <button className="bg-teal-700 hover:bg-teal-800 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-white" type="submit">{editingId ? 'Update' : 'Create'}</button>
-          {editingId && <button type="button" className="rounded px-3 py-2 border border-gray-700 text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white" onClick={()=>{ setEditingId(null); setForm({ title:'', excerpt:'', content:'', author:'', date:new Date().toISOString().slice(0,10), image:'', category_id: 0}); }}>Cancel</button>}
+          <button className="bg-teal-700 hover:bg-teal-800 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-white" type="submit" disabled={uploading}>{uploading ? 'Uploading…' : (editingId ? 'Update' : 'Create')}</button>
+          {editingId && <button type="button" className="rounded-md px-3 py-2 border border-gray-300 text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white" onClick={()=>{ setEditingId(null); setForm({ title:'', excerpt:'', content:'', author:'', date:new Date().toISOString().slice(0,10), image:'', category_id: 0}); setPreviewUrl(null); }}>Cancel</button>}
         </div>
         {error && <p className="text-red-600">{error}</p>}
       </form>
