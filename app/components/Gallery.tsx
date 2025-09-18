@@ -13,7 +13,7 @@ async function getGallery(): Promise<GalleryItem[]> {
         .select('id, src, filename')
         .order('id', { ascending: false })
         .limit(30);
-    console.log(data)
+    // console.log(data)
     if (error) {
         // eslint-disable-next-line no-console
             console.error('Supabase gallery error', error.code, error.message);

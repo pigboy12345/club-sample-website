@@ -85,24 +85,25 @@ const ActivityModal: React.FC<{
       aria-modal="true"
       role="dialog"
     >
-      <div
-        className="bg-white rounded-xl max-w-md w-full p-6 shadow-lg relative overflow-y-auto max-h-[80vh] scrollbar-hide"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className=" rounded-xl max-w-md w-full p-6 shadow-lg relative bg-white"
+      onClick={(e) => e.stopPropagation()}>
         <button
-          onClick={onClose}
-          className="absolute top-4 right-4 hover:text-teal-600 text-gray-700 text-2xl font-bold z-50"
-          aria-label="Close"
-        >
-          <IoCloseCircleOutline />
-        </button>
-        <h3 className="text-xl font-bold text-teal-600 mb-4">
-          {activity.title}
-        </h3>
+            onClick={onClose}
+            className="absolute top-4 right-4 hover:text-teal-600 text-gray-700 text-2xl font-bold z-50"
+            aria-label="Close"
+          >
+            <IoCloseCircleOutline className="w-6 h-6 text-gray-700" />
+          </button>
         <div
-          className="text-gray-700 text-sm leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: activity.fullDescription }}
-        />
+          className="bg-white p-6 overflow-y-auto max-h-[80vh] scrollbar-hide">
+          <h3 className="text-xl font-bold text-teal-600 mb-4">
+            {activity.title}
+          </h3>
+          <div
+            className="text-gray-700 text-sm leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: activity.fullDescription }}
+          />
+        </div>
       </div>
     </div>
   );

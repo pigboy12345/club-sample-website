@@ -145,7 +145,7 @@ const About: React.FC = () => {
                 </span>
               )}
             </p>
-            <div
+            {/* <div
               onClick={() => setShowBoardMembers((prev) => !prev)}
               className="shadow cursor-pointer flex justify-between text-black w-full font-semibold p-2 rounded-lg hover:bg-teal-700 hover:text-white transition duration-300"
             >
@@ -153,7 +153,7 @@ const About: React.FC = () => {
               <div className="font-bold transition duration-300 pt-1">
                 {showBoardMembers ? <FaChevronUp /> : <FaChevronDown />}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {showBoardMembers && (

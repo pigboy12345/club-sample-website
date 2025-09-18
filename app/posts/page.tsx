@@ -1,8 +1,9 @@
 import React from 'react';
-import { FileText, Calendar, User, Heart, MessageCircle, Share2, Eye } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import { posts as staticPosts } from '../data/posts';
 import type { Post, Category } from '../../types';
+import PostsGrid from '../components/PostsGrid';
 
 async function getPosts(): Promise<Post[]> {
   if (!supabase) return staticPosts.map(p => ({
@@ -85,55 +86,7 @@ const Posts = async () => {
         {/* Posts Grid */}
         <section className="py-16 lg:py-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {posts.map((post) => (
-                <article
-                  key={post.id}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
-                >
-                  <div className="aspect-video overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(post.category?.name || 'General')}`}>
-                        {post.category?.name || 'General'}
-                      </span>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Calendar className="w-4 h-4 mr-1" />
-                        {formatDate(post.date)}
-                      </div>
-                    </div>
-
-                    <h2 className="text-xl font-bold text-gray-800 mb-3 leading-tight hover:text-blue-600 transition-colors cursor-pointer">
-                      {post.title}
-                    </h2>
-
-                    <p className="text-gray-600 mb-4 leading-relaxed">
-                      {post.excerpt}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center">
-                        <User className="w-4 h-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-600 font-medium">{post.author}</span>
-                      </div>
-
-                      <div className="flex items-center space-x-4">
-                        {/* Removed likes/comments/views */}
-                        <button className="text-gray-400 hover:text-blue-600 transition-colors">
-                          <Share2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <PostsGrid posts={posts} />
 
             {/* Load More Button */}
             <div className="text-center mt-12">
