@@ -6,6 +6,9 @@ import MissionVision from './components/MissionVision';
 import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 
+// Home contains Gallery which queries Supabase; force dynamic to avoid staleness
+export const dynamic = 'force-dynamic';
+
 // Inspect the components rendered by the App component (Header, Hero, About, Activities, Footer) for potential hydration issues.
 // Specifically look for client components, the use of hooks (like useState or useEffect), and any direct DOM manipulation
 function Home() {

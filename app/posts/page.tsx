@@ -5,6 +5,9 @@ import { posts as staticPosts } from '../data/posts';
 import type { Post, Category } from '../../types';
 import PostsGrid from '../components/PostsGrid';
 
+// Ensure this page is rendered dynamically on Vercel so new data appears immediately
+export const dynamic = 'force-dynamic';
+
 async function getPosts(): Promise<Post[]> {
   if (!supabase) return staticPosts.map(p => ({
     id: p.id,

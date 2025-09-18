@@ -4,6 +4,9 @@ import { supabase } from '../../lib/supabaseClient';
 import { announcements as staticAnnouncements } from '../data/announcements';
 import type { Announcement } from '../../types';
 
+// Ensure this page is rendered dynamically on Vercel so new data appears immediately
+export const dynamic = 'force-dynamic';
+
 async function getAnnouncements(): Promise<Announcement[]> {
   if (!supabase) return staticAnnouncements.map(a => ({
     id: a.id,

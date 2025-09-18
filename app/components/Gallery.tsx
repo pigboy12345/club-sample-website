@@ -4,6 +4,9 @@ import { images as staticImages } from '../data/gallery';
 
 interface GalleryItem { id: number; src: string; filename?: string | null }
 
+// Render dynamically to fetch latest images on each request
+export const dynamic = 'force-dynamic';
+
 async function getGallery(): Promise<GalleryItem[]> {
     if (!supabase) {
         return staticImages.map((src, idx) => ({ id: idx + 1, src }));
