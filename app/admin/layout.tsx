@@ -1,12 +1,28 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 
+function DebugPanel({ pathname, email }: { pathname: string | null; email: string | null }) {
+  // This hook requires being inside a Suspense boundary in React 19/Next 15
+  const search = useSearchParams();
+  if (process.env.NODE_ENV !== 'production' && search?.get('debug') === '1') {
+    return (
+      <div className="fixed bottom-2 right-2 text-xs bg-white/90 border rounded p-2 shadow">
+        <div><b>Debug</b></div>
+        <div>path: {pathname ?? ''}</div>
+        <div>email: {email || 'none'}</div>
+        <div>allowlist: {(process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').toString()}</div>
+        <div>supabase: {supabase ? 'ok' : 'missing'}</div>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const search = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState<string | null>(null);
@@ -119,15 +135,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </header>
       <main className="pt-16 max-w-6xl mx-auto p-4">{children}</main>
-      {process.env.NODE_ENV !== 'production' && search?.get('debug') === '1' && (
-        <div className="fixed bottom-2 right-2 text-xs bg-white/90 border rounded p-2 shadow">
-          <div><b>Debug</b></div>
-          <div>path: {pathname}</div>
-          <div>email: {email || 'none'}</div>
-          <div>allowlist: {(process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').toString()}</div>
-          <div>supabase: {supabase ? 'ok' : 'missing'}</div>
-        </div>
-      )}
+      <Suspense fallback={null}>
+        <DebugPanel pathname={pathname} email={email} />
+      </Suspense>
     </div>
   );
 }
