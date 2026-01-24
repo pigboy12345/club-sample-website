@@ -116,7 +116,7 @@ export default function AdminGallery() {
     <div className="space-y-6 sm:space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Gallery</h1>
-        <button type="button" onClick={goBack} className="px-3 py-2 rounded border border-gray-300 text-gray-800 hover:bg-gray-50">Back</button>
+        <button type="button" onClick={goBack} className="px-3 py-2 rounded border border-gray-400 text-gray-900 hover:bg-gray-50">Back</button>
       </div>
       <form onSubmit={save} className="grid gap-4 border rounded-lg p-6 md:p-8 bg-white">
         <input className="border rounded px-3 py-2" placeholder="Filename (optional)" value={form.filename||''} onChange={(e)=>setForm({ ...form, filename: e.target.value })} />
@@ -129,7 +129,7 @@ export default function AdminGallery() {
               onChange={onImageSelect}
               className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900"
             />
-            <p className="text-xs text-gray-700">Bucket: {DEFAULT_BUCKET} • Folder: gallery. A public URL will be saved with the image.</p>
+            {/* <p className="text-xs text-gray-700">Bucket: {DEFAULT_BUCKET} • Folder: gallery. A public URL will be saved with the image.</p> */}
           </div>
           <div className="justify-self-end">
             {(previewUrl || form.src) && (
@@ -155,14 +155,14 @@ export default function AdminGallery() {
             <div key={g.id} className="border rounded p-4 bg-white flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
               <div className="flex items-center gap-3">
                 <img src={g.src} alt={g.filename || ''} className="w-20 h-20 object-cover rounded" />
-                <div>
-      <div className="font-semibold text-gray-900">{g.filename || 'Untitled'}</div>
-      <div className="text-xs text-gray-800 max-w-xl truncate">{g.src}</div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-gray-900 truncate">{g.filename || 'Untitled'}</div>
+                  <div className="text-xs text-gray-800 truncate">{g.src}</div>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 rounded border" onClick={()=>{ setEditingId(g.id); setForm({ ...g }); }}>Edit</button>
-                <button className="px-3 py-1.5 rounded border text-red-600" onClick={()=>del(g.id)}>Delete</button>
+                <button className="px-3 py-1.5 rounded border border-gray-400 text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600" onClick={()=>{ setEditingId(g.id); setForm({ ...g }); }}>Edit</button>
+                <button className="px-3 py-1.5 rounded border border-gray-400 text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600" onClick={()=>del(g.id)}>Delete</button>
               </div>
             </div>
           ))

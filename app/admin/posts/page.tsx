@@ -160,7 +160,7 @@ export default function AdminPosts() {
         <button
           type="button"
           onClick={goBack}
-          className="px-3 py-2 rounded border border-gray-300 text-gray-800 hover:bg-gray-50"
+          className="px-3 py-2 rounded border border-gray-400 text-gray-900 hover:bg-gray-50"
         >
           Back
         </button>
@@ -234,7 +234,7 @@ export default function AdminPosts() {
               onChange={onImageSelect}
               className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900"
             />
-            <p className="text-xs text-gray-700">Bucket: {DEFAULT_BUCKET} • Folder: posts. A public URL will be saved with the post.</p>
+            {/* <p className="text-xs text-gray-700">Bucket: {DEFAULT_BUCKET} • Folder: posts. A public URL will be saved with the post.</p> */}
           </div>
           <div className="justify-self-end">
             {(previewUrl || form.image) && (
@@ -263,8 +263,8 @@ export default function AdminPosts() {
                 <p className="text-gray-900 mt-1 max-w-3xl whitespace-pre-line">{p.excerpt}</p>
               </div>
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 rounded border" onClick={()=>{ setEditingId(p.id); setForm({ ...p }); }}>Edit</button>
-                <button className="px-3 py-1.5 rounded border text-red-600" onClick={()=>del(p.id)}>Delete</button>
+                <button className="px-3 py-1.5 rounded border border-gray-400 text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600" onClick={()=>{ setEditingId(p.id); setForm({ ...p }); }}>Edit</button>
+                <button className="px-3 py-1.5 rounded border border-gray-400 text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600" onClick={()=>del(p.id)}>Delete</button>
               </div>
             </div>
           ))
