@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Calendar, User, Share2, X } from 'lucide-react';
 import type { Post, Category } from '../../types';
 import { IoCloseCircleOutline } from "react-icons/io5";
+import PostImageCarousel from './PostImageCarousel';
 
 interface Props {
     posts: Post[];
@@ -98,7 +99,7 @@ export default function PostsGrid({ posts }: Props) {
             {selected && (
                 <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center pt-14 justify-center">
                     <div className=" rounded-xl max-w-3xl w-full p-5 shadow-2xl max-h-[80vh] overflow-hidden relative bg-white flex flex-col">
-                        <button
+<button
                             className="absolute top-3 right-3 rounded-full bg-white/90 border shadow hover:bg-white z-50 flex items-center justify-center"
                             aria-label="Close"
                             onClick={() => setSelected(null)}
@@ -106,7 +107,11 @@ export default function PostsGrid({ posts }: Props) {
                             <IoCloseCircleOutline className="w-7 h-7 text-gray-700" />
                         </button>
                         <div className="relative">
-                            <img src={selected.image} alt={selected.title} className="w-full max-h-[40vh] object-cover" />
+                            {selected.images && selected.images.length > 0 ? (
+                                <PostImageCarousel images={selected.images} title={selected.title} />
+                            ) : (
+                                <img src={selected.image} alt={selected.title} className="w-full max-h-[40vh] object-cover" />
+                            )}
                         </div>
                         <div className="p-6 overflow-y-auto flex-1">
                             <div className="flex items-center justify-between mb-3">

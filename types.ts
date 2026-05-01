@@ -13,7 +13,8 @@ export interface Post {
   content: string;
   author: string;
   date: string; // ISO date string
-  image: string; // URL
+  image: string; // URL (primary/thumbnail)
+  images?: string[]; // Additional images for carousel
   category_id: number; // FK -> categories.id
   created_at?: string;
   category?: Category; // joined

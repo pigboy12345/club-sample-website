@@ -4,13 +4,20 @@ import { supabase } from '../../../lib/supabaseClient';
 import type { Post, Category } from '../../../types';
 import { useRouter } from 'next/navigation';
 import { uploadImageToBucket, DEFAULT_BUCKET } from '../../../lib/upload';
+import { X } from 'lucide-react';
+
+interface UploadedImage {
+  file?: File;
+  previewUrl: string;
+  publicUrl?: string;
+}
 
 export default function AdminPosts() {
   const router = useRouter();
   const [items, setItems] = useState<Post[]>([]);
   const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState<Partial<Post>>({ title: '', excerpt: '', content: '', author: '', date: new Date().toISOString().slice(0,10), image: '', category_id: 0 });
+  const [form, setForm] = useState<Partial<Post>>({ title: '', excerpt: '', content: '', author: '', date: new Date().toISOString().slice(0,10), image: '', images: [], category_id: 0 });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [authed, setAuthed] = useState<boolean>(false);
@@ -19,6 +26,7 @@ export default function AdminPosts() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
 
   async function load() {
     if (!supabase) {
@@ -58,21 +66,69 @@ export default function AdminPosts() {
     load();
   }, []);
 
-  async function onImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+async function onImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
     setError(null);
     setUploading(true);
-    const localUrl = URL.createObjectURL(file);
-    setPreviewUrl(localUrl);
+
     try {
-  const { publicUrl } = await uploadImageToBucket(DEFAULT_BUCKET, file, userId ?? undefined, 'posts');
-      setForm((prev) => ({ ...prev, image: publicUrl }));
+      const newImages: UploadedImage[] = [];
+      
+      for (const file of Array.from(files)) {
+        const localUrl = URL.createObjectURL(file);
+        newImages.push({ file, previewUrl: localUrl });
+      }
+      
+      // Upload all images to Supabase
+      const uploadedUrls: string[] = [];
+      for (const img of newImages) {
+        if (img.file) {
+          try {
+            const { publicUrl } = await uploadImageToBucket(DEFAULT_BUCKET, img.file, userId ?? undefined, 'posts');
+            uploadedUrls.push(publicUrl);
+          } catch (err: any) {
+            console.error('Failed to upload image:', err);
+          }
+        }
+      }
+
+      // Update form with new images
+      const allImages = [...(form.images || []), ...uploadedUrls];
+      setForm((prev) => ({ ...prev, images: allImages }));
+      
+      // If no primary image set, use first one
+      if (!form.image && uploadedUrls.length > 0) {
+        setPreviewUrl(uploadedUrls[0]);
+        setForm((prev) => ({ ...prev, image: uploadedUrls[0] }));
+      }
+      
+      setUploadedImages((prev) => [...prev, ...newImages]);
     } catch (err: any) {
       setError(err?.message || 'Image upload failed');
-      setPreviewUrl(null);
     } finally {
       setUploading(false);
+    }
+  }
+
+  function removeImage(index: number) {
+    const imgToRemove = uploadedImages[index];
+    const urlToRemove = form.images?.[index];
+    
+    // Remove from uploadedImages array
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+    
+    // Remove from form.images
+    const newImages = (form.images || []).filter((_, i) => i !== index);
+    setForm((prev) => ({ ...prev, images: newImages }));
+    
+    // If we removed the primary image, set a new one
+    if (urlToRemove === form.image && newImages.length > 0) {
+      setForm((prev) => ({ ...prev, image: newImages[0] }));
+      setPreviewUrl(newImages[0]);
+    } else if (newImages.length === 0) {
+      setForm((prev) => ({ ...prev, image: '' }));
+      setPreviewUrl(null);
     }
   }
 
@@ -103,7 +159,7 @@ export default function AdminPosts() {
     }
   }
 
-  async function save(e: React.FormEvent) {
+async function save(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (!supabase) return;
@@ -115,6 +171,7 @@ export default function AdminPosts() {
         author: form.author,
         date: form.date,
         image: form.image,
+        images: form.images,
         category_id: Number(form.category_id) || null,
       };
       if (editingId) {
@@ -124,8 +181,9 @@ export default function AdminPosts() {
         const { error } = await supabase.from('posts').insert(payload);
         if (error) throw error;
       }
-      setForm({ title: '', excerpt: '', content: '', author: '', date: new Date().toISOString().slice(0,10), image: '', category_id: cats[0]?.id || 0 });
+      setForm({ title: '', excerpt: '', content: '', author: '', date: new Date().toISOString().slice(0,10), image: '', images: [], category_id: cats[0]?.id || 0 });
       setPreviewUrl(null);
+      setUploadedImages([]);
       setEditingId(null);
       await load();
     } catch (err: any) {
@@ -225,26 +283,73 @@ export default function AdminPosts() {
             {addingCat ? 'Adding…' : 'Add Category'}
           </button>
         </div>
-        <div className="grid sm:grid-cols-[1fr_auto] gap-3 items-start">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-900">Upload image to Storage</label>
+<div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-900">Upload Images (Multiple)</label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-500 transition-colors">
             <input
               type="file"
               accept="image/*"
+              multiple
               onChange={onImageSelect}
+              disabled={uploading}
               className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900"
             />
-            {/* <p className="text-xs text-gray-700">Bucket: {DEFAULT_BUCKET} • Folder: posts. A public URL will be saved with the post.</p> */}
+            <p className="text-xs text-gray-500 mt-2">
+              Select multiple images to upload. First image will be the primary/thumbnail.
+            </p>
           </div>
-          <div className="justify-self-end">
-            {(previewUrl || form.image) && (
-              <img src={(previewUrl || form.image) as string} alt="Preview" className="w-28 h-28 object-cover rounded border" />
-            )}
-          </div>
+          
+          {/* Uploaded Images Preview Grid */}
+          {(uploadedImages.length > 0 || (form.images && form.images.length > 0)) && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-700">Uploaded Images:</p>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                {(uploadedImages.length > 0 ? uploadedImages.map((img, idx) => (
+                  <div key={idx} className="relative group">
+                    <img 
+                      src={img.previewUrl} 
+                      alt={`Preview ${idx + 1}`} 
+                      className="w-full h-20 object-cover rounded border" 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                    {idx === 0 && (
+                      <span className="absolute bottom-1 left-1 bg-teal-600 text-white text-xs px-1 rounded">Primary</span>
+                    )}
+                  </div>
+                )) : form.images?.map((url, idx) => (
+                  <div key={idx} className="relative group">
+                    <img 
+                      src={url} 
+                      alt={`Image ${idx + 1}`} 
+                      className="w-full h-20 object-cover rounded border" 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                    {idx === 0 && (
+                      <span className="absolute bottom-1 left-1 bg-teal-600 text-white text-xs px-1 rounded">Primary</span>
+                    )}
+                  </div>
+                )))}
+              </div>
+            </div>
+          )}
+          
+          {uploading && <p className="text-sm text-teal-600">Uploading images...</p>}
         </div>
-        <div className="flex gap-2">
+<div className="flex gap-2">
           <button className="bg-teal-700 hover:bg-teal-800 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-white" type="submit" disabled={uploading}>{uploading ? 'Uploading…' : (editingId ? 'Update' : 'Create')}</button>
-          {editingId && <button type="button" className="rounded-md px-3 py-2 border border-gray-300 text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white" onClick={()=>{ setEditingId(null); setForm({ title:'', excerpt:'', content:'', author:'', date:new Date().toISOString().slice(0,10), image:'', category_id: 0}); setPreviewUrl(null); }}>Cancel</button>}
+          {editingId && <button type="button" className="rounded-md px-3 py-2 border border-gray-300 text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white" onClick={()=>{ setEditingId(null); setForm({ title:'', excerpt:'', content:'', author:'', date:new Date().toISOString().slice(0,10), image:'', images: [], category_id: 0}); setPreviewUrl(null); setUploadedImages([]); }}>Cancel</button>}
         </div>
         {error && <p className="text-red-600">{error}</p>}
       </form>

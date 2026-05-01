@@ -23,7 +23,7 @@ async function getPosts(): Promise<Post[]> {
 
   const { data, error } = await supabase
     .from('posts')
-  .select('id,title,excerpt,content,author,date,image,category_id, categories ( id, name )')
+.select('id,title,excerpt,content,author,date,image,images,category_id, categories ( id, name )')
     .order('date', { ascending: false })
     .limit(20);
   if (error) {
@@ -31,7 +31,7 @@ async function getPosts(): Promise<Post[]> {
     console.error('Supabase posts error', error.message);
     return [];
   }
-  return (data || []).map((row: any) => ({
+return (data || []).map((row: any) => ({
     id: row.id,
     title: row.title,
     excerpt: row.excerpt,
@@ -39,6 +39,7 @@ async function getPosts(): Promise<Post[]> {
     author: row.author,
     date: row.date,
     image: row.image,
+    images: row.images,
     category_id: row.category_id,
     category: row.categories as Category
   }));
