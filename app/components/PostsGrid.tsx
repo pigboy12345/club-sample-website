@@ -4,6 +4,7 @@ import { Calendar, User, Share2, X } from 'lucide-react';
 import type { Post, Category } from '../../types';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import PostImageCarousel from './PostImageCarousel';
+import Link from 'next/link';
 
 interface Props {
     posts: Post[];
@@ -43,56 +44,55 @@ export default function PostsGrid({ posts }: Props) {
 
     return (
         <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {posts.map((post) => (
-                    <article
+                    <Link
                         key={post.id}
-                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden cursor-pointer"
-                        onClick={() => setSelected(post)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => { if (e.key === 'Enter') setSelected(post); }}
+                        href={`/posts/${post.id}`}
+                        className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
                     >
-                        <div className="aspect-video overflow-hidden">
-                            <img
-                                src={post.image}
-                                alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                            />
-                        </div>
-                        <div className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(post.category?.name || 'General')}`}>
-                                    {post.category?.name || 'General'}
-                                </span>
-                                <div className="flex items-center text-sm text-gray-500">
-                                    <Calendar className="w-4 h-4 mr-1" />
-                                    {formatDate(post.date)}
+                        <article className="cursor-pointer">
+                            <div className="aspect-video overflow-hidden">
+                                <img
+                                    src={post.image}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                />
+                            </div>
+                            <div className="p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(post.category?.name || 'General')}`}>
+                                        {post.category?.name || 'General'}
+                                    </span>
+                                    <div className="flex items-center text-sm text-gray-500">
+                                        <Calendar className="w-4 h-4 mr-1" />
+                                        {formatDate(post.date)}
+                                    </div>
+                                </div>
+
+                                <h2 className="text-xl font-bold text-gray-800 mb-3 leading-tight hover:text-blue-600 transition-colors">
+                                    {post.title}
+                                </h2>
+
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    {post.excerpt}
+                                </p>
+
+                                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                                    <div className="flex items-center">
+                                        <User className="w-4 h-4 mr-2 text-gray-400" />
+                                        <span className="text-sm text-gray-600 font-medium">{post.author}</span>
+                                    </div>
+
+                                    <div className="flex items-center space-x-4">
+                                        <button className="text-gray-400 hover:text-blue-600 transition-colors" onClick={(e) => { e.preventDefault(); e.stopPropagation(); /* share behavior later */ }}>
+                                            <Share2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-
-                            <h2 className="text-xl font-bold text-gray-800 mb-3 leading-tight hover:text-blue-600 transition-colors">
-                                {post.title}
-                            </h2>
-
-                            <p className="text-gray-600 mb-4 leading-relaxed">
-                                {post.excerpt}
-                            </p>
-
-                            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                <div className="flex items-center">
-                                    <User className="w-4 h-4 mr-2 text-gray-400" />
-                                    <span className="text-sm text-gray-600 font-medium">{post.author}</span>
-                                </div>
-
-                                <div className="flex items-center space-x-4">
-                                    <button className="text-gray-400 hover:text-blue-600 transition-colors" onClick={(e) => { e.stopPropagation(); /* share behavior later */ }}>
-                                        <Share2 className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+                        </article>
+                    </Link>
                 ))}
             </div>
 
