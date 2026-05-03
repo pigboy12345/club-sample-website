@@ -1,8 +1,10 @@
+'use client';
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { FileText, Calendar, User, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabaseClient';
+import PostImageCarousel from '../../components/PostImageCarousel';
 import { posts as staticPosts } from '../../data/posts';
 import type { Post, Category } from '../../../types';
 
@@ -91,6 +93,8 @@ export default async function PostPage({ params }: PageProps) {
     notFound();
   }
 
+  const allImages = post.images && post.images.length > 0 ? [post.image!, ...post.images] : [post.image!];
+
   return (
     <main className="pt-16">
       <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50">
@@ -113,11 +117,15 @@ export default async function PostPage({ params }: PageProps) {
               <div className="grid grid-cols-1 md:grid-cols-2">
                 {/* Image Section - Left on desktop/tablet, Top on mobile */}
                 <div className="relative aspect-video md:aspect-auto bg-gray-100">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover"
-                  />
+                  {allImages.length > 1 ? (
+                    <PostImageCarousel images={allImages} title={post.title} />
+                  ) : (
+                    <img
+                      src={allImages[0]}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
 
                 {/* Content Section - Right on desktop/tablet, Bottom on mobile */}
@@ -163,28 +171,6 @@ export default async function PostPage({ params }: PageProps) {
                     </p>
                   </div>
 
-                  {/* Additional Images (if any) */}
-                  {post.images && post.images.length > 0 && (
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                        More Images
-                      </h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {post.images.map((img, index) => (
-                          <div
-                            key={index}
-                            className="aspect-video rounded-lg overflow-hidden bg-gray-100"
-                          >
-                            <img
-                              src={img}
-                              alt={`${post.title} - Image ${index + 1}`}
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </article>
