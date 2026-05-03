@@ -115,7 +115,7 @@ export default async function PostPage({ params }: PageProps) {
               {/* Responsive Layout: Stack on mobile, side-by-side on tablet/desktop */}
               <div className="grid grid-cols-1 md:grid-cols-2">
                 {/* Image Section - Left on desktop/tablet, Top on mobile */}
-                <div className="relative aspect-video md:aspect-auto bg-gray-100">
+                <div className="relative aspect-video md:h-full bg-gray-100">
                   {allImages.length > 1 ? (
                     <PostImageCarousel images={allImages} title={post.title} />
                   ) : (

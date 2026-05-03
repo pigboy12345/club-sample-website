@@ -56,9 +56,9 @@ export default function PostImageCarousel({ images, title }: PostImageCarouselPr
   }
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full h-full overflow-hidden">
       {/* Main Image Display */}
-      <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-900">
+      <div className="relative aspect-video md:h-full overflow-hidden rounded-lg bg-gray-900">
         <div
           className="absolute inset-0 flex transition-transform duration-300 ease-out"
           style={{
@@ -73,7 +73,7 @@ export default function PostImageCarousel({ images, title }: PostImageCarouselPr
               <img
                 src={src}
                 alt={`${title} - Image ${index + 1}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
           ))}
