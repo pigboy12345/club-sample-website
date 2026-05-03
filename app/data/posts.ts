@@ -7,6 +7,11 @@ export const posts = [
       author: 'Meera Thomas',
       date: '2025-01-10',
       image: 'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      images: [
+        'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043459/pexels-photo-1043459.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043460/pexels-photo-1043460.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'
+      ],
   category: 'Culture'
     },
     {
@@ -17,7 +22,12 @@ export const posts = [
       author: 'Arun Krishnan',
       date: '2025-01-08',
       image: 'https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-  category: 'Youth'
+      images: [
+        'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043459/pexels-photo-1043459.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043460/pexels-photo-1043460.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'
+      ],
+      category: 'Youth'
     },
     {
       id: 3,
@@ -27,6 +37,11 @@ export const posts = [
       author: 'Priya Nair',
       date: '2025-01-05',
       image: 'https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      images: [
+        'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043459/pexels-photo-1043459.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043460/pexels-photo-1043460.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'
+      ],
   category: 'Service'
     },
     {
@@ -37,6 +52,11 @@ export const posts = [
       author: 'Rajesh Kumar',
       date: '2025-01-03',
       image: 'https://images.pexels.com/photos/163444/sport-tug-of-war-team-effort-163444.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      images: [
+        'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043459/pexels-photo-1043459.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043460/pexels-photo-1043460.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'
+      ],
   category: 'Sports'
     },
     {
@@ -47,6 +67,11 @@ export const posts = [
       author: 'Suresh Menon',
       date: '2025-01-01',
       image: 'https://images.pexels.com/photos/1072179/pexels-photo-1072179.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      images: [
+        'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043459/pexels-photo-1043459.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043460/pexels-photo-1043460.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'
+      ],
   category: 'Environment'
     },
     {
@@ -57,6 +82,11 @@ export const posts = [
       author: 'Lakshmi Pillai',
       date: '2024-12-28',
       image: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      images: [
+        'https://images.pexels.com/photos/1043458/pexels-photo-1043458.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043459/pexels-photo-1043459.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+        'https://images.pexels.com/photos/1043460/pexels-photo-1043460.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'
+      ],
   category: 'Empowerment'
     }
   ];

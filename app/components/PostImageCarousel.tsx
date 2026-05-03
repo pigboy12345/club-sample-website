@@ -58,9 +58,9 @@ export default function PostImageCarousel({ images, title }: PostImageCarouselPr
   return (
     <div className="relative w-full h-full overflow-hidden">
       {/* Main Image Display */}
-      <div className="relative aspect-video md:h-full overflow-hidden rounded-lg bg-gray-900">
+      <div className="relative w-full h-full overflow-hidden rounded-lg bg-gray-900">
         <div
-          className="absolute inset-0 flex transition-transform duration-300 ease-out"
+          className="absolute inset-0 flex w-full h-full transition-transform duration-300 ease-out"
           style={{
             transform: `translateX(-${currentIndex * 100}%)`,
           }}
@@ -68,7 +68,7 @@ export default function PostImageCarousel({ images, title }: PostImageCarouselPr
           {allImages.map((src, index) => (
             <div
               key={index}
-              className="w-full h-full flex-shrink-0"
+              className="min-w-full h-full flex-shrink-0"
             >
               <img
                 src={src}
