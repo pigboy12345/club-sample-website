@@ -73,7 +73,7 @@ export default function PostImageCarousel({ images, title }: PostImageCarouselPr
               <img
                 src={src}
                 alt={`${title} - Image ${index + 1}`}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
           ))}
