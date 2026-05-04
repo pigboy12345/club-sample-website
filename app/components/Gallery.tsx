@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { X } from 'lucide-react';
 import PostImageCarousel from './PostImageCarousel';
 import { supabase } from '../../lib/supabaseClient';
 import type { Post } from '../../types';
@@ -16,12 +17,14 @@ interface GalleryItem {
 
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-const [isTransitioning, setIsTransitioning] = useState(false);
-
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [allGalleryItems, setAllGalleryItems] = useState<GalleryItem[]>([]);
   const [loadingGallery, setLoadingGallery] = useState(true);
-
+  const router = useRouter();
   const galleryLengthRef = React.useRef(0);
+
+  const galleryItems = allGalleryItems.filter(item => item.type === 'gallery');
+  const galleryImages = galleryItems.map(item => item.src);
 
   const openModal = useCallback((index: number) => {
     setSelectedIndex(index);
@@ -50,6 +53,10 @@ const [isTransitioning, setIsTransitioning] = useState(false);
   }, [isTransitioning, selectedIndex]);
 
   useEffect(() => {
+    galleryLengthRef.current = galleryItems.length;
+  }, [galleryItems.length]);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
       if (e.key === 'ArrowLeft') goToPrev();
@@ -69,18 +76,18 @@ const [isTransitioning, setIsTransitioning] = useState(false);
     const fetchGalleryItems = async () => {
       setLoadingGallery(true);
       const buildFallback = () => {
-        const galleryItems: GalleryItem[] = fallbackGalleryImages.map((src, index) => ({
+        const galleryItemsLocal: GalleryItem[] = fallbackGalleryImages.map((src, index) => ({
           id: index + 1,
           src,
           type: 'gallery' as const,
-        } as GalleryItem));
-        const postItems: GalleryItem[] = fallbackPosts.map((post, index) => ({
-          id: 100 + index + 1,
+        }));
+        const postItemsLocal: GalleryItem[] = fallbackPosts.map((post) => ({
+          id: post.id + 1000,
           src: post.image,
           type: 'post' as const,
           postId: post.id,
-        } as GalleryItem));
-        return [...galleryItems, ...postItems];
+        }));
+        return [...galleryItemsLocal, ...postItemsLocal];
       };
 
       if (!supabase) {
@@ -94,17 +101,17 @@ const [isTransitioning, setIsTransitioning] = useState(false);
           supabase.from('gallery').select('*').order('created_at', { ascending: false }),
           supabase.from('posts').select('id, image, created_at').order('created_at', { ascending: false }),
         ]);
-        const galleryItems: GalleryItem[] = (galleryData || []).map((item: any) => ({
+        const galleryItemsLocal: GalleryItem[] = (galleryData || []).map((item: any) => ({
           ...item,
           type: 'gallery' as const,
-        } as GalleryItem));
-        const postItems: GalleryItem[] = (postsData || []).map((p: any) => ({
-          id: 1000 + p.id,
+        }));
+        const postItemsLocal: GalleryItem[] = (postsData || []).map((p: any) => ({
+          id: p.id + 1000,
           src: p.image,
           type: 'post' as const,
           postId: p.id,
-        } as GalleryItem));
-        setAllGalleryItems([...galleryItems, ...postItems]);
+        }));
+        setAllGalleryItems([...galleryItemsLocal, ...postItemsLocal]);
       } catch (err: any) {
         console.error('Gallery fetch error:', err);
         setAllGalleryItems(buildFallback());
@@ -115,9 +122,14 @@ const [isTransitioning, setIsTransitioning] = useState(false);
     fetchGalleryItems();
   }, []);
 
-  useEffect(() => {
-    galleryLengthRef.current = allGalleryItems.length;
-  }, [allGalleryItems.length]);
+  const handleThumbnailClick = useCallback((item: GalleryItem) => {
+    if (item.type === 'post' && item.postId) {
+      router.push(`/posts/${item.postId}`);
+    } else {
+      const index = galleryItems.findIndex(g => g.id === item.id);
+      if (index >= 0) openModal(index);
+    }
+  }, [router, galleryItems, openModal]);
 
   return (
     <>
@@ -137,7 +149,7 @@ const [isTransitioning, setIsTransitioning] = useState(false);
             {allGalleryItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => openModal(allGalleryItems.findIndex(g => g.id === item.id))}
+                onClick={() => handleThumbnailClick(item)}
                 className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
               >
                 <img
@@ -156,7 +168,7 @@ const [isTransitioning, setIsTransitioning] = useState(false);
         )}
       </section>
 
-      {selectedIndex !== null && (
+      {selectedIndex !== null && galleryItems.length > 0 && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
           onClick={closeModal}
@@ -165,7 +177,6 @@ const [isTransitioning, setIsTransitioning] = useState(false);
             className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
@@ -174,15 +185,13 @@ const [isTransitioning, setIsTransitioning] = useState(false);
               <X className="w-6 h-6" />
             </button>
 
-            {/* Main Carousel */}
             <PostImageCarousel 
-              images={allGalleryItems.map(item => item.src)} 
-              title={`Gallery - Image ${selectedIndex + 1}`}
+              images={galleryImages} 
+              title={`Gallery - Image ${selectedIndex + 1} of ${galleryItems.length}`}
             />
 
-            {/* Counter */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm z-10">
-              {selectedIndex !== null ? `${selectedIndex + 1} / ${allGalleryItems.length}` : ''}
+              {selectedIndex !== null ? `${selectedIndex + 1} / ${galleryItems.length}` : ''}
             </div>
           </div>
         </div>
@@ -190,4 +199,3 @@ const [isTransitioning, setIsTransitioning] = useState(false);
     </>
   );
 }
-
