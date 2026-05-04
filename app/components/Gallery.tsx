@@ -1,52 +1,193 @@
-import React from 'react';
+"use client";
+import React, { useState, useEffect, useCallback } from 'react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import PostImageCarousel from './PostImageCarousel';
 import { supabase } from '../../lib/supabaseClient';
-import { images as staticImages } from '../data/gallery';
+import type { Post } from '../../types';
+import { images as fallbackGalleryImages } from '../data/gallery';
+import { posts as fallbackPosts } from '../data/posts';
 
-interface GalleryItem { id: number; src: string; filename?: string | null }
-
-// Render dynamically to fetch latest images on each request
-export const dynamic = 'force-dynamic';
-
-async function getGallery(): Promise<GalleryItem[]> {
-    if (!supabase) {
-        return staticImages.map((src, idx) => ({ id: idx + 1, src }));
-    }
-    const { data, error } = await supabase
-        .from('gallery')
-        .select('id, src, filename')
-        .order('id', { ascending: false })
-        .limit(30);
-    // console.log(data)
-    if (error) {
-        // eslint-disable-next-line no-console
-            console.error('Supabase gallery error', error.code, error.message);
-            // 42P01 = undefined_table in Postgres
-            if (error.code === '42P01') {
-                return staticImages.map((src, idx) => ({ id: idx + 1, src, filename: null }));
-            }
-            return [];
-    }
-    return (data || []) as GalleryItem[];
+interface GalleryItem {
+  id: number;
+  src: string;
+  type: 'gallery' | 'post';
+  postId?: number;
 }
 
-const Gallery = async () => {
-    const gallery = await getGallery();
+export default function Gallery() {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+const [isTransitioning, setIsTransitioning] = useState(false);
 
-    return (
-        <section id='gallery' className="p-8 md:p-16 bg-white">
-            <h2 className="text-3xl font-bold text-teal-600 text-center mb-10">Gallery</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {gallery.map((item) => (
-                    <img
-                        key={item.id}
-                        src={item.src}
-                        alt={item.filename || `Gallery image ${item.id}`}
-                        className="w-full h-64 object-cover rounded-lg shadow-md"
-                    />
-                ))}
-            </div>
-        </section>
+  const [allGalleryItems, setAllGalleryItems] = useState<GalleryItem[]>([]);
+  const [loadingGallery, setLoadingGallery] = useState(true);
+
+  const galleryLengthRef = React.useRef(0);
+
+  const openModal = useCallback((index: number) => {
+    setSelectedIndex(index);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setSelectedIndex(null);
+    document.body.style.overflow = 'unset';
+  }, []);
+
+  const goToPrev = useCallback(() => {
+    if (isTransitioning || selectedIndex === null) return;
+    setIsTransitioning(true);
+    setSelectedIndex((prev) => 
+      prev === null ? null : (prev - 1 + galleryLengthRef.current) % galleryLengthRef.current
     );
-};
+  }, [isTransitioning, selectedIndex]);
 
-export default Gallery;
+  const goToNext = useCallback(() => {
+    if (isTransitioning || selectedIndex === null) return;
+    setIsTransitioning(true);
+    setSelectedIndex((prev) => 
+      prev === null ? null : (prev + 1) % galleryLengthRef.current
+    );
+  }, [isTransitioning, selectedIndex]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') goToPrev();
+      if (e.key === 'ArrowRight') goToNext();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [closeModal, goToPrev, goToNext]);
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchGalleryItems = async () => {
+      setLoadingGallery(true);
+      const buildFallback = () => {
+        const galleryItems: GalleryItem[] = fallbackGalleryImages.map((src, index) => ({
+          id: index + 1,
+          src,
+          type: 'gallery' as const,
+        } as GalleryItem));
+        const postItems: GalleryItem[] = fallbackPosts.map((post, index) => ({
+          id: 100 + index + 1,
+          src: post.image,
+          type: 'post' as const,
+          postId: post.id,
+        } as GalleryItem));
+        return [...galleryItems, ...postItems];
+      };
+
+      if (!supabase) {
+        setAllGalleryItems(buildFallback());
+        setLoadingGallery(false);
+        return;
+      }
+
+      try {
+        const [ { data: galleryData }, { data: postsData } ] = await Promise.all([
+          supabase.from('gallery').select('*').order('created_at', { ascending: false }),
+          supabase.from('posts').select('id, image, created_at').order('created_at', { ascending: false }),
+        ]);
+        const galleryItems: GalleryItem[] = (galleryData || []).map((item: any) => ({
+          ...item,
+          type: 'gallery' as const,
+        } as GalleryItem));
+        const postItems: GalleryItem[] = (postsData || []).map((p: any) => ({
+          id: 1000 + p.id,
+          src: p.image,
+          type: 'post' as const,
+          postId: p.id,
+        } as GalleryItem));
+        setAllGalleryItems([...galleryItems, ...postItems]);
+      } catch (err: any) {
+        console.error('Gallery fetch error:', err);
+        setAllGalleryItems(buildFallback());
+      } finally {
+        setLoadingGallery(false);
+      }
+    };
+    fetchGalleryItems();
+  }, []);
+
+  useEffect(() => {
+    galleryLengthRef.current = allGalleryItems.length;
+  }, [allGalleryItems.length]);
+
+  return (
+    <>
+      <section id='gallery' className="p-8 md:p-16 bg-white">
+        <h2 className="text-3xl font-bold text-teal-600 text-center mb-10">Gallery</h2>
+        {loadingGallery ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {Array.from({length: 16}).map((_, i) => (
+              <div 
+                key={`skel-${i}`}
+                className="relative overflow-hidden rounded-xl shadow-md bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-64 md:h-72 lg:h-80 w-full"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {allGalleryItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => openModal(allGalleryItems.findIndex(g => g.id === item.id))}
+                className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
+                <img
+                  src={item.src}
+                  alt={`Gallery image ${item.id}`}
+                  className="w-full h-64 md:h-72 lg:h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                {item.type === 'post' && (
+                  <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md">
+                    Post
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {selectedIndex !== null && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+          onClick={closeModal}
+        >
+          <div 
+            className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+              aria-label="Close gallery"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Main Carousel */}
+            <PostImageCarousel 
+              images={allGalleryItems.map(item => item.src)} 
+              title={`Gallery - Image ${selectedIndex + 1}`}
+            />
+
+            {/* Counter */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm z-10">
+              {selectedIndex !== null ? `${selectedIndex + 1} / ${allGalleryItems.length}` : ''}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
