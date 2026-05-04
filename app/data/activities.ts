@@ -17,7 +17,7 @@ In addition to football, we conduct badminton tournaments, carrom competitions, 
 <br/><br/>
 Through these activities, we aim to create an active, engaging, and sports-loving community where passion, teamwork, and sportsmanship thrive.`,
         image:
-            "https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?auto=compress&cs=tinysrgb&w=500",
+            "https://thefederal.com/file/2023/07/Lead-1-8.jpg",
         color: "from-red-100 to-orange-100",
     },
     {
@@ -31,7 +31,7 @@ We also offer dance classes for children and youth, helping them explore their a
 <br/> <br/>
 Through these activities, we strive to nurture creativity, confidence, and cultural pride in every generation of Kalkuzhy.`,
         image:
-            "https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=500",
+            "https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Fkathakali-portrayals-of-krishna-and-panchali-1746261448_d6e82e82f88f7fb46d9d.webp&w=1920&q=75",
         color: "from-yellow-100 to-amber-100",
     },
     {

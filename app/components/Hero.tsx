@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
         </button> */}
         <Link href="/posts" passHref>
           <button className="text-slate-600 px-9 hover:text-teal-600 py-3 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-          Explore Now...!
+          Discover Our Posts...!
         </button>
         </Link>
       </div>
