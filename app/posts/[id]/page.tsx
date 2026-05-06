@@ -59,6 +59,7 @@ if (!supabase) {
     date: data.date,
     image: data.image,
     images: data.images || [],
+    video: data.video || null,
     category_id: data.category_id,
     category: data.categories as Category
   };
