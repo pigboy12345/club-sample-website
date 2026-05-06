@@ -52,12 +52,20 @@ export default function PostsGrid({ posts }: Props) {
                         className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
                     >
                         <article className="cursor-pointer">
-                            <div className="aspect-video overflow-hidden">
-                                <img
-                                    src={post.image}
-                                    alt={post.title}
-                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                                />
+                            <div className="aspect-video overflow-hidden bg-gray-100">
+                                {post.video ? (
+                                    <video
+                                        src={post.video}
+                                        controls
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <img
+                                        src={post.image}
+                                        alt={post.title}
+                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                    />
+                                )}
                             </div>
                             <div className="p-6">
                                 <div className="flex items-center justify-between mb-4">
@@ -107,10 +115,20 @@ export default function PostsGrid({ posts }: Props) {
                             <IoCloseCircleOutline className="w-7 h-7 text-gray-700" />
                         </button>
                         <div className="relative">
-                            {selected.images && selected.images.length > 0 ? (
+                            {selected.video ? (
+                                <video
+                                    src={selected.video}
+                                    controls
+                                    className="w-full max-h-[40vh] object-contain"
+                                />
+                            ) : selected.images && selected.images.length > 0 ? (
                                 <PostImageCarousel images={selected.images} title={selected.title} />
                             ) : (
-                                <img src={selected.image} alt={selected.title} className="w-full max-h-[40vh] object-cover" />
+                                <img
+                                    src={selected.image}
+                                    alt={selected.title}
+                                    className="w-full max-h-[40vh] object-cover"
+                                />
                             )}
                         </div>
                         <div className="p-6 overflow-y-auto flex-1">

@@ -99,18 +99,33 @@ export default function Gallery() {
       try {
         const [ { data: galleryData }, { data: postsData } ] = await Promise.all([
           supabase.from('gallery').select('*').order('created_at', { ascending: false }),
-          supabase.from('posts').select('id, image, created_at').order('created_at', { ascending: false }),
+          supabase.from('posts').select('id, image, images, created_at').order('created_at', { ascending: false }),
         ]);
+
         const galleryItemsLocal: GalleryItem[] = (galleryData || []).map((item: any) => ({
           ...item,
           type: 'gallery' as const,
         }));
-        const postItemsLocal: GalleryItem[] = (postsData || []).map((p: any) => ({
-          id: p.id + 1000,
-          src: p.image,
-          type: 'post' as const,
-          postId: p.id,
-        }));
+
+        const postItemsLocal: GalleryItem[] = (postsData || [])
+          .map((p: any) => {
+            const postImages: string[] = Array.isArray(p.images) ? p.images.filter(Boolean) : [];
+            const hasSingleImage = typeof p.image === 'string' && p.image.length > 0;
+
+            // Requirement: if BOTH `image` and `images` are null/empty, don't show this post
+            if (!hasSingleImage && postImages.length === 0) return null;
+
+            const src = hasSingleImage ? p.image : postImages[0];
+
+            return {
+              id: p.id + 1000,
+              src,
+              type: 'post' as const,
+              postId: p.id,
+            } as GalleryItem;
+          })
+          .filter((x: GalleryItem | null): x is GalleryItem => x !== null);
+
         setAllGalleryItems([...galleryItemsLocal, ...postItemsLocal]);
       } catch (err: any) {
         console.error('Gallery fetch error:', err);

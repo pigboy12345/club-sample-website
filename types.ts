@@ -15,6 +15,7 @@ export interface Post {
   date: string; // ISO date string
   image: string; // URL (primary/thumbnail)
   images?: string[]; // Additional images for carousel
+  video?: string | null; // Optional single video public URL
   category_id: number; // FK -> categories.id
   created_at?: string;
   category?: Category; // joined

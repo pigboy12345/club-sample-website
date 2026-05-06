@@ -31,8 +31,9 @@ if (!supabase) {
         date: post.date,
         image: post.image,
         images: (post as any).images || [],
+        video: (post as any).video ?? null,
         category_id: 0,
-        category: { id: 0, name: post.category }
+        category: { id: 0, name: (post as any).category }
       };
     }
     return null;
@@ -40,7 +41,7 @@ if (!supabase) {
 
   const { data, error } = await supabase
     .from('posts')
-    .select('id,title,excerpt,content,author,date,image,images,category_id, categories ( id, name )')
+    .select('id,title,excerpt,content,author,date,image,images,video,category_id, categories ( id, name )')
     .eq('id', postId)
     .single();
 
@@ -114,9 +115,15 @@ export default async function PostPage({ params }: PageProps) {
             <article className="bg-white rounded-2xl shadow-lg overflow-hidden">
               {/* Responsive Layout: Stack on mobile, side-by-side on tablet/desktop */}
               <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* Image Section - Left on desktop/tablet, Top on mobile */}
+                {/* Media Section - Video preferred, else images */}
                 <div className="relative aspect-video md:aspect-auto bg-gray-100">
-                  {allImages.length > 1 ? (
+                  {post.video ? (
+                    <video
+                      src={post.video}
+                      controls
+                      className="w-full h-full object-contain"
+                    />
+                  ) : allImages.length > 1 ? (
                     <PostImageCarousel images={allImages} title={post.title} />
                   ) : (
                     <img
