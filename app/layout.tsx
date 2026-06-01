@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+// Ignore missing TypeScript declarations for global css import
+// @ts-ignore
 import "./globals.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import NotificationBell from './components/NotificationBell';
+import { Toaster } from 'react-hot-toast';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +41,7 @@ export default function RootLayout({
           </div>
 
           {children}
+          <Toaster position="bottom-right" />
           <Footer />
         </div>
       </body>
