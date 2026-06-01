@@ -3,7 +3,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/meedbvwz';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xaqkgzjo';
 
 type FormStatus = 'idle' | 'submitting';
 
