@@ -20,13 +20,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bappuji Club Kalkuzhy",
+  title: "Bappuji Kalkuzhy",
   description: "Bappuji Kala Kayika Samskarika Vedhi Club Kalkuzhy",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Bappuji Club Kalkuzhy",
+    title: "Bappuji Kalkuzhy",
     description: "Bappuji Kala Kayika Samskarika Vedhi Club Kalkuzhy",
     images: [
       {

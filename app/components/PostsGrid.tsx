@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Calendar, User, Share2, X } from 'lucide-react';
+import { Calendar, User, Share2 } from 'lucide-react';
 import type { Post, Category } from '../../types';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import PostImageCarousel from './PostImageCarousel';
@@ -92,8 +92,47 @@ export default function PostsGrid({ posts }: Props) {
                                         <span className="text-sm text-gray-600 font-medium">{post.author}</span>
                                     </div>
 
-                                    <div className="flex items-center space-x-4">
-                                        <button className="text-gray-400 hover:text-blue-600 transition-colors" onClick={(e) => { e.preventDefault(); e.stopPropagation(); /* share behavior later */ }}>
+<div className="flex items-center space-x-4">
+                                        <button
+                                            type="button"
+                                            className="text-gray-400 hover:text-blue-600 transition-colors"
+                                            aria-label={`Share ${post.title}`}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                const url = `${window.location.origin}/posts/${post.id}`;
+                                                const title = post.title;
+                                                const shareData = { title, text: post.excerpt || title, url };
+
+                                                if (navigator.share) {
+                                                    navigator
+                                                        .share(shareData)
+                                                        .catch(() => {
+                                                            // Ignore user cancel / unsupported errors
+                                                        });
+                                                    return;
+                                                }
+
+                                                // Fallback: copy link to clipboard
+                                                if (navigator.clipboard?.writeText) {
+                                                    navigator.clipboard.writeText(url).catch(() => {});
+                                                    return;
+                                                }
+
+                                                // Last resort fallback
+                                                const input = document.createElement('input');
+                                                input.value = url;
+                                                document.body.appendChild(input);
+                                                input.select();
+                                                try {
+                                                    document.execCommand('copy');
+                                                } catch {
+                                                    // ignore
+                                                } finally {
+                                                    document.body.removeChild(input);
+                                                }
+                                            }}
+                                        >
                                             <Share2 className="w-4 h-4" />
                                         </button>
                                     </div>
