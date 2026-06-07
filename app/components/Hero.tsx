@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
     <section id="home" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-100 via-blue-50 to-cyan-100">
       <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 py-20">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-          Voice of <span className="text-teal-600">Kalkuzhy</span>
+          Voice of <span className="text-teal-600">Kalkuzhy</span><span className="text-xl text-red-600">(Test)</span>
         </h1>
         <p className="text-xl sm:text-2xl text-gray-700 mb-8 leading-relaxed">
           Celebrating Culture. Inspiring Growth.
