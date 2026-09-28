@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 // Ignore missing TypeScript declarations for global css import
 // @ts-ignore
 import "./globals.css";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import NotificationBell from './components/NotificationBell';
+import SiteChrome from "./components/SiteChrome";
 import { Toaster } from 'react-hot-toast';
 
 
@@ -16,6 +14,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
 });
 
@@ -47,17 +50,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
       >
-        <div className="min-h-screen bg-white">
-          <Header />
-          <div className="fixed top-20 right-0 z-40">
-            <NotificationBell />
-          </div>
-
-          {children}
+        <div className="min-h-screen bg-[#f6f3ee]">
+          <SiteChrome>{children}</SiteChrome>
           <Toaster position="bottom-right" />
-          <Footer />
         </div>
       </body>
     </html>

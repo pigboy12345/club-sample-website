@@ -8,8 +8,9 @@ import { usePathname } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import type { Announcement } from '../../types';
 
-const NotificationBell = () => {
+const NotificationBell = ({ tone = "dark" }: { tone?: "dark" | "light" }) => {
   const [isHovering, setIsHovering] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,9 +18,11 @@ const NotificationBell = () => {
 
   const truncate = (str: string, numWords: number) => str.split(" ").slice(0, numWords).join(" ");
 
-  // Fetch latest announcements when hovering for the first time
+  const panelOpen = isHovering || isOpen;
+
+  // Fetch latest announcements when the panel opens
   useEffect(() => {
-    if (!isHovering) return;
+    if (!panelOpen) return;
     if (items.length > 0 || loading) return; // avoid refetch spam
     async function load() {
       if (!supabase) {
@@ -54,7 +57,7 @@ const NotificationBell = () => {
       }
     }
     load();
-  }, [isHovering, items.length, loading]);
+  }, [panelOpen, items.length, loading]);
 
   const sorter = (a: Announcement, b: Announcement) => {
     if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
@@ -63,7 +66,7 @@ const NotificationBell = () => {
 
   // Optional realtime subscription to keep list fresh while open
   useEffect(() => {
-    if (!isHovering || !supabase) return;
+    if (!panelOpen || !supabase) return;
     type Payload = {
       eventType: 'INSERT' | 'UPDATE' | 'DELETE';
       new: any;
@@ -87,7 +90,7 @@ const NotificationBell = () => {
       })
       .subscribe();
     return () => { channel.unsubscribe(); };
-  }, [isHovering]);
+  }, [panelOpen]);
 
   if (pathname === '/announcements') {
     return null;
@@ -99,13 +102,21 @@ const NotificationBell = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <Link href="/announcements" passHref>
-        <button className="relative hover:text-gray-800 bg-white shadow-md hover:shadow-lg rounded-lg px-4 py-2 text-gray-600  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-teal-500">
-          <Bell className="h-6 w-6" />
-        </button>
-      </Link>
-      {isHovering && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-20">
+      <button
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        className={`relative inline-flex items-center justify-center rounded-full p-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
+          tone === "light"
+            ? "text-white hover:bg-white/10"
+            : "text-stone-700 hover:bg-teal-50"
+        }`}
+        aria-expanded={panelOpen}
+        aria-label="Announcements"
+      >
+        <Bell className="h-5 w-5" />
+      </button>
+      {panelOpen && (
+        <div className="absolute right-0 z-30 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-stone-200 bg-white shadow-xl">
           <div className="px-4 py-2 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-800">Notifications</h3>
             {loading && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}

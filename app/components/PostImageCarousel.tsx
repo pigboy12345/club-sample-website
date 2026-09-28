@@ -5,10 +5,11 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 interface PostImageCarouselProps {
   images: string[];
   title: string;
+  startIndex?: number;
 }
 
-export default function PostImageCarousel({ images, title }: PostImageCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+export default function PostImageCarousel({ images, title, startIndex = 0 }: PostImageCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const allImages = images.length > 0 ? images : [];

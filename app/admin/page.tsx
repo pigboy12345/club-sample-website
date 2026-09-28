@@ -7,12 +7,21 @@ export default function AdminHome() {
   const router = useRouter();
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-      <p className="text-gray-800">Manage posts, announcements, and gallery.</p>
-      <div className="grid sm:grid-cols-3 gap-4">
-        <Link href="/admin/posts" className="rounded-lg border p-4 hover:shadow text-gray-900">Posts</Link>
-        <Link href="/admin/announcements" className="rounded-lg border p-4 hover:shadow text-gray-900">Announcements</Link>
-        <Link href="/admin/gallery" className="rounded-lg border p-4 hover:shadow text-gray-900">Gallery</Link>
+      <h1 className="font-display text-3xl text-stone-900 sm:text-4xl">Admin dashboard</h1>
+      <p className="text-stone-600">Manage posts, announcements, and gallery.</p>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Link href="/admin/posts" className="rounded-3xl bg-white p-6 text-stone-900 shadow-sm ring-1 ring-stone-200 transition hover:-translate-y-0.5 hover:shadow-md">
+          <span className="font-display text-2xl">Posts</span>
+          <p className="mt-2 text-sm text-stone-600">Write and update club stories.</p>
+        </Link>
+        <Link href="/admin/announcements" className="rounded-3xl bg-white p-6 text-stone-900 shadow-sm ring-1 ring-stone-200 transition hover:-translate-y-0.5 hover:shadow-md">
+          <span className="font-display text-2xl">Announcements</span>
+          <p className="mt-2 text-sm text-stone-600">Pin notices and upcoming events.</p>
+        </Link>
+        <Link href="/admin/gallery" className="rounded-3xl bg-white p-6 text-stone-900 shadow-sm ring-1 ring-stone-200 transition hover:-translate-y-0.5 hover:shadow-md">
+          <span className="font-display text-2xl">Gallery</span>
+          <p className="mt-2 text-sm text-stone-600">Add photographs from club life.</p>
+        </Link>
       </div>
       <div>
         <button

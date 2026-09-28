@@ -27,8 +27,9 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-gray-900">Admin Login</h1>
+    <div className="mx-auto max-w-sm rounded-3xl bg-white p-6 shadow-sm ring-1 ring-stone-200 sm:p-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">Bappuji</p>
+      <h1 className="mb-6 mt-2 font-display text-3xl text-stone-900">Admin login</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <input
           className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
@@ -46,7 +47,7 @@ export default function AdminLogin() {
           onChange={(e)=>setPassword(e.target.value)}
           required
         />
-        <button disabled={loading} className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white rounded px-3 py-2">{loading? 'Signing in…' : 'Sign in'}</button>
+        <button disabled={loading} className="w-full rounded-full bg-teal-800 px-3 py-2.5 font-semibold text-white hover:bg-teal-900 disabled:opacity-60">{loading? 'Signing in…' : 'Sign in'}</button>
       </form>
       {error && <p className="text-red-700 mt-3">{error}</p>}
       <p className="text-xs text-gray-700 mt-6">Use an email/password user created in Supabase Auth.</p>

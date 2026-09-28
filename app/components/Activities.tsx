@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { activities, Activity } from "../data/activities";
+import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
 
 // Activity card
 const ActivityCard: React.FC<{
@@ -12,13 +14,13 @@ const ActivityCard: React.FC<{
 
   return (
     <div
-      className={`bg-gradient-to-br ${activity.color} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group`}
+      className={`group h-full rounded-3xl bg-gradient-to-br ${activity.color} p-4 shadow-md ring-1 ring-black/5 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5`}
     >
-      <div className="aspect-w-16 aspect-h-10 mb-6">
+      <div className="mb-5 overflow-hidden rounded-2xl">
         <img
           src={activity.image}
           alt={activity.title}
-          className="w-full h-40 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+          className="h-44 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-48"
         />
       </div>
       <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight">
@@ -54,10 +56,10 @@ const ActivityCard: React.FC<{
       </p>
       <button
         onClick={onReadMore}
-        className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg w-full"
+        className="w-full rounded-full bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white transition duration-300 hover:bg-teal-800"
         aria-label={`Read more about ${activity.title}`}
       >
-        Read More
+        Read more
       </button>
     </div>
   );
@@ -79,13 +81,13 @@ const ActivityModal: React.FC<{
 
   return (
     <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center pt-14 justify-center z-50"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-3 backdrop-blur-sm sm:items-center sm:p-6"
       onClick={onClose}
       tabIndex={-1}
       aria-modal="true"
       role="dialog"
     >
-      <div className=" rounded-xl max-w-md w-full p-6 shadow-lg relative bg-white"
+      <div className="relative max-h-[88vh] w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl"
       onClick={(e) => e.stopPropagation()}>
         <button
             onClick={onClose}
@@ -115,13 +117,17 @@ const Activities: React.FC = () => {
   return (
     <section
       id="activities"
-      className="py-20 bg-gradient-to-br from-teal-50 via-blue-50 to-cyan-50"
+      className="bg-white py-16 sm:py-24"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
-          ACTIVITIES
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div data-scroll-y="80" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <SectionHeading
+            eyebrow="What we do"
+            title="Activities"
+            subtitle="Sports, arts, youth programmes, and service that keep Kalkuzhy moving."
+          />
+        </Reveal>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {activities.map((activity) => (
             <ActivityCard
               key={activity.title}

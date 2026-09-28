@@ -1,9 +1,10 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { FileText, Calendar, User, ArrowLeft } from 'lucide-react';
+import { Calendar, User, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabaseClient';
 import PostImageCarousel from '../../components/PostImageCarousel';
+import Reveal from '../../components/Reveal';
 import { posts as staticPosts } from '../../data/posts';
 import type { Post, Category } from '../../../types';
 
@@ -97,23 +98,22 @@ export default async function PostPage({ params }: PageProps) {
   const allImages = post.images && post.images.length > 0 ? [post.image!, ...post.images] : [post.image!];
 
   return (
-    <main className="pt-16">
-      <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50">
-        {/* Back Navigation */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <main className="bg-[#f6f3ee] pt-[4.5rem] sm:pt-20">
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
           <Link
             href="/posts"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+            className="inline-flex items-center text-sm font-semibold text-teal-800 hover:text-teal-950"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Posts
+            <ArrowLeft className="mr-2 h-5 w-5" />
+            Back to posts
           </Link>
         </div>
 
-        {/* Post Detail Section */}
         <section className="py-8 lg:py-12">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <article className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <Reveal>
+            <article className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-stone-200/80">
               {/* Responsive Layout: Stack on mobile, side-by-side on tablet/desktop */}
               <div className="grid grid-cols-1 md:grid-cols-2">
                 {/* Media Section - Video preferred, else images */}
@@ -149,7 +149,7 @@ export default async function PostPage({ params }: PageProps) {
                   </div>
 
                   {/* Title */}
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                  <h1 className="font-display text-3xl font-semibold leading-tight text-stone-900 md:text-4xl lg:text-5xl mb-4">
                     {post.title}
                   </h1>
 
@@ -181,15 +181,15 @@ export default async function PostPage({ params }: PageProps) {
                 </div>
               </div>
             </article>
+            </Reveal>
 
-            {/* Back to Posts Button */}
-            <div className="text-center mt-8">
+            <div className="mt-8 text-center">
               <Link
                 href="/posts"
-                className="inline-flex items-center bg-slate-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                className="inline-flex items-center rounded-full bg-teal-800 px-6 py-3 font-semibold text-white transition hover:bg-teal-900"
               >
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                View All Posts
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                View all posts
               </Link>
             </div>
           </div>

@@ -7,6 +7,9 @@ import { supabase } from '../../lib/supabaseClient';
 import type { Post } from '../../types';
 import { images as fallbackGalleryImages } from '../data/gallery';
 import { posts as fallbackPosts } from '../data/posts';
+import Reveal, { Stagger } from './Reveal';
+import SectionHeading from './SectionHeading';
+import SlideText from './SlideText';
 
 interface GalleryItem {
   id: number;
@@ -17,7 +20,6 @@ interface GalleryItem {
 
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [allGalleryItems, setAllGalleryItems] = useState<GalleryItem[]>([]);
   const [loadingGallery, setLoadingGallery] = useState(true);
   const router = useRouter();
@@ -37,20 +39,18 @@ export default function Gallery() {
   }, []);
 
   const goToPrev = useCallback(() => {
-    if (isTransitioning || selectedIndex === null) return;
-    setIsTransitioning(true);
+    if (selectedIndex === null || galleryLengthRef.current === 0) return;
     setSelectedIndex((prev) => 
       prev === null ? null : (prev - 1 + galleryLengthRef.current) % galleryLengthRef.current
     );
-  }, [isTransitioning, selectedIndex]);
+  }, [selectedIndex]);
 
   const goToNext = useCallback(() => {
-    if (isTransitioning || selectedIndex === null) return;
-    setIsTransitioning(true);
+    if (selectedIndex === null || galleryLengthRef.current === 0) return;
     setSelectedIndex((prev) => 
       prev === null ? null : (prev + 1) % galleryLengthRef.current
     );
-  }, [isTransitioning, selectedIndex]);
+  }, [selectedIndex]);
 
   useEffect(() => {
     galleryLengthRef.current = galleryItems.length;
@@ -148,39 +148,52 @@ export default function Gallery() {
 
   return (
     <>
-      <section id='gallery' className="p-8 md:p-16 bg-white">
-        <h2 className="text-3xl font-bold text-teal-600 text-center mb-10">Gallery</h2>
+      <section id="gallery" className="bg-[#f6f3ee] py-16 sm:py-24">
+        <div data-scroll-y="70" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Moments"
+              title="Gallery"
+              subtitle="Photographs from club life. Post images open the full story."
+            />
+          </Reveal>
         {loadingGallery ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {Array.from({length: 16}).map((_, i) => (
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+            {Array.from({length: 8}).map((_, i) => (
               <div 
                 key={`skel-${i}`}
-                className="relative overflow-hidden rounded-xl shadow-md bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-64 md:h-72 lg:h-80 w-full"
+                className="h-40 animate-pulse rounded-2xl bg-stone-200 sm:h-52 md:h-64"
               />
             ))}
           </div>
+        ) : allGalleryItems.length === 0 ? (
+          <SlideText>
+            <p className="text-center text-stone-600">Gallery photos will appear here soon.</p>
+          </SlideText>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
             {allGalleryItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleThumbnailClick(item)}
-                className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
+                className="group relative overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/5"
               >
                 <img
                   src={item.src}
                   alt={`Gallery image ${item.id}`}
-                  className="w-full h-64 md:h-72 lg:h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                  className="h-40 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-52 md:h-64"
                 />
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
                 {item.type === 'post' && (
-                  <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md">
+                  <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-stone-800">
                     Post
-                  </div>
+                  </span>
                 )}
               </button>
             ))}
-          </div>
+          </Stagger>
         )}
+        </div>
       </section>
 
       {selectedIndex !== null && galleryItems.length > 0 && (
@@ -201,7 +214,9 @@ export default function Gallery() {
             </button>
 
             <PostImageCarousel 
-              images={galleryImages} 
+              key={selectedIndex}
+              images={galleryImages}
+              startIndex={selectedIndex}
               title={`Gallery - Image ${selectedIndex + 1} of ${galleryItems.length}`}
             />
 
