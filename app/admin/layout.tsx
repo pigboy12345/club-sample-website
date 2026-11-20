@@ -106,35 +106,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
   }, [pathname, router]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-900">Loading…</div>;
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[#f6f3ee] text-stone-900">Loading…</div>;
+
+  const linkClass = (active: boolean) =>
+    `shrink-0 rounded-full px-3 py-1.5 transition ${active ? 'bg-teal-800 text-white' : 'text-stone-700 hover:bg-teal-50'}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <header className="fixed top-0 inset-x-0 h-14 bg-white border-b z-20">
-        <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-4">
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/admin" className={`hover:text-teal-700 ${pathname === '/admin' ? 'text-teal-800 font-semibold' : 'text-gray-800'}`}>Dashboard</Link>
-            <Link href="/admin/posts" className={`hover:text-teal-700 ${pathname?.startsWith('/admin/posts') ? 'text-teal-800 font-semibold' : 'text-gray-800'}`}>Posts</Link>
-            <Link href="/admin/announcements" className={`hover:text-teal-700 ${pathname?.startsWith('/admin/announcements') ? 'text-teal-800 font-semibold' : 'text-gray-800'}`}>Announcements</Link>
-            <Link href="/admin/gallery" className={`hover:text-teal-700 ${pathname?.startsWith('/admin/gallery') ? 'text-teal-800 font-semibold' : 'text-gray-800'}`}>Gallery</Link>
-          </nav>
-          <div className="flex items-center gap-3 text-sm text-gray-800">
-            {email ? <span className="text-gray-900">{email}</span> : <span>Guest</span>}
-            {email ? (
-              <button
-                className="px-3 py-1.5 rounded border hover:bg-gray-50"
-                onClick={async () => {
-                  // Only sign out; auth listener will handle navigation to login
-                  await supabase?.auth.signOut();
-                }}
-              >Logout</button>
-            ) : (
-              <Link href="/admin/login" className="px-3 py-1.5 rounded border hover:bg-gray-50">Login</Link>
-            )}
+    <div className="min-h-screen bg-[#f6f3ee]">
+      <header className="fixed inset-x-0 top-0 z-20 border-b border-stone-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="flex h-14 items-center justify-between gap-3">
+            <p className="font-display text-lg text-stone-900">Bappuji admin</p>
+            <div className="flex shrink-0 items-center gap-2 text-sm text-stone-800">
+              {email ? <span className="hidden max-w-[12rem] truncate sm:inline">{email}</span> : <span className="text-stone-500">Guest</span>}
+              {email ? (
+                <button
+                  className="rounded-full border border-stone-300 px-3 py-1.5 hover:bg-stone-50"
+                  onClick={async () => {
+                    await supabase?.auth.signOut();
+                  }}
+                >Logout</button>
+              ) : (
+                <Link href="/admin/login" className="rounded-full border border-stone-300 px-3 py-1.5 hover:bg-stone-50">Login</Link>
+              )}
+            </div>
           </div>
+          <nav className="flex gap-1 overflow-x-auto pb-3 text-sm scrollbar-hide">
+            <Link href="/admin" className={linkClass(pathname === '/admin')}>Dashboard</Link>
+            <Link href="/admin/posts" className={linkClass(!!pathname?.startsWith('/admin/posts'))}>Posts</Link>
+            <Link href="/admin/announcements" className={linkClass(!!pathname?.startsWith('/admin/announcements'))}>Announcements</Link>
+            <Link href="/admin/gallery" className={linkClass(!!pathname?.startsWith('/admin/gallery'))}>Gallery</Link>
+          </nav>
         </div>
       </header>
-      <main className="pt-16 max-w-6xl mx-auto p-4">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 pb-10 pt-32">{children}</main>
       <Suspense fallback={null}>
         <DebugPanel pathname={pathname} email={email} />
       </Suspense>

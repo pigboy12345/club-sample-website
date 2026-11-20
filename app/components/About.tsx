@@ -2,14 +2,16 @@
 import React, { useState } from "react";
 import { Mail, Phone, Award } from "lucide-react";
 import { leaders } from "../data/leaders";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
+import SlideText from "./SlideText";
 
 // Card component for reuse
 const LeaderCard: React.FC<{
   leader: (typeof leaders)[number];
   showAchievements?: boolean;
 }> = ({ leader, showAchievements = false }) => (
-  <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+  <div className="overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-stone-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
     <div className="aspect-square overflow-hidden">
       <img
         src={leader.image}
@@ -115,49 +117,63 @@ const About: React.FC = () => {
   );
 
   return (
-    <section id="about" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
-            ABOUT US
-          </h2>
-          <div className="p-4 sm:p-8">
-            <p className="text-lg text-gray-700 leading-relaxed mb-8">
+    <section id="about" className="bg-[#f6f3ee] py-16 sm:py-24">
+      <div data-scroll-y="80" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-6xl items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <Reveal>
+            <div className="overflow-hidden rounded-3xl shadow-md">
+              <img
+                src="/images/about-forum.png"
+                alt="Members of the Bappuji community forum in Kalkuzhy"
+                data-speed="0.86"
+                className="h-72 w-full scale-110 object-cover sm:h-96"
+              />
+            </div>
+          </Reveal>
+          <div>
+          <Reveal>
+            <SectionHeading
+              eyebrow="Our story"
+              title="About us"
+              subtitle="A community forum for arts, sports, culture, and service in the heart of Kalkuzhy."
+              align="left"
+            />
+          </Reveal>
+          <Reveal delay={0.08}>
+          <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-stone-200/80 sm:p-10">
+            <SlideText delay={0.12}>
+            <p className="text-base leading-relaxed text-stone-700 sm:text-lg">
               <span dangerouslySetInnerHTML={{ __html: shortText }} />
               {!showFullText && words.length > 60 && <span>... </span>}
               {showFullText && (
                 <span dangerouslySetInnerHTML={{ __html: remainingText }} />
               )}
               {!showFullText && words.length > 60 && (
-                <span
+                <button
+                  type="button"
                   onClick={() => setShowFullText(true)}
-                  className="text-base font-semibold hover:text-gray-700 text-teal-600 cursor-pointer"
+                  className="ml-1 font-semibold text-teal-700 hover:text-teal-900"
                 >
-                  read more
-                </span>
+                  Read more
+                </button>
               )}
               {showFullText && (
-                <span
+                <button
+                  type="button"
                   onClick={() => setShowFullText(false)}
-                  className="hover:text-gray-700 text-teal-600 cursor-pointer text-base font-semibold"
+                  className="ml-1 font-semibold text-teal-700 hover:text-teal-900"
                 >
-                  read less
-                </span>
+                  Read less
+                </button>
               )}
             </p>
-            {/* <div
-              onClick={() => setShowBoardMembers((prev) => !prev)}
-              className="shadow cursor-pointer flex justify-between text-black w-full font-semibold p-2 rounded-lg hover:bg-teal-700 hover:text-white transition duration-300"
-            >
-              <p>Our Board Members</p>
-              <div className="font-bold transition duration-300 pt-1">
-                {showBoardMembers ? <FaChevronUp /> : <FaChevronDown />}
-              </div>
-            </div> */}
+            </SlideText>
+          </div>
+          </Reveal>
           </div>
 
           {showBoardMembers && (
-            <div className="mt-12">
+            <div className="mt-12 lg:col-span-2">
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
                 Board Members
               </h3>

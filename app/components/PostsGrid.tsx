@@ -5,6 +5,7 @@ import type { Post, Category } from '../../types';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import PostImageCarousel from './PostImageCarousel';
 import Link from 'next/link';
+import { Stagger } from './Reveal';
 
 interface Props {
     posts: Post[];
@@ -44,12 +45,17 @@ export default function PostsGrid({ posts }: Props) {
 
     return (
         <>
-<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {posts.length === 0 ? (
+                <p className="rounded-3xl bg-white px-6 py-16 text-center text-stone-600 ring-1 ring-stone-200">
+                    No stories have been published yet.
+                </p>
+            ) : (
+            <Stagger className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {posts.map((post) => (
                     <Link
                         key={post.id}
                         href={`/posts/${post.id}`}
-                        className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+                        className="block overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-stone-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
                         <article className="cursor-pointer">
                             <div className="aspect-video overflow-hidden bg-gray-100">
@@ -141,7 +147,8 @@ export default function PostsGrid({ posts }: Props) {
                         </article>
                     </Link>
                 ))}
-            </div>
+            </Stagger>
+            )}
 
             {selected && (
                 <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center pt-14 justify-center">

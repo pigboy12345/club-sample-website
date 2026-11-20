@@ -2,6 +2,10 @@
 
 import React, { useMemo, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import Reveal from './Reveal';
+import SectionHeading from './SectionHeading';
+import SlideText from './SlideText';
 
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xaqkgzjo';
 
@@ -81,19 +85,54 @@ const Contact: React.FC = () => {
     }
   };
 
-  return (
-    <section id="contact" className="bg-teal-600 text-white p-8 md:p-16">
-      <div className="max-w-xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-center">Contact Us</h2>
+  const fieldClass =
+    'w-full rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-stone-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-200';
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+  return (
+    <section id="contact" className="bg-white py-16 sm:py-24">
+      <div data-scroll-y="80" className="mx-auto grid max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <Reveal>
+          <SectionHeading
+            eyebrow="Say hello"
+            title="Contact us"
+            subtitle="Write to the forum about programmes, membership, or a visit to Kalkuzhy."
+            align="left"
+          />
+          <SlideText delay={0.12}>
+          <ul className="space-y-4 text-stone-700">
+            <li className="flex items-start gap-3">
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-teal-700" />
+              <span>Kalkuzhy, Thrissur, Kerala, India</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <Phone className="h-5 w-5 shrink-0 text-teal-700" />
+              <a href="tel:+918139076084" className="hover:text-teal-800">+91 81390 76084</a>
+            </li>
+            <li className="flex items-center gap-3">
+              <Mail className="h-5 w-5 shrink-0 text-teal-700" />
+              <a href="mailto:bappujikalkuzhy@gmail.com" className="break-all hover:text-teal-800">bappujikalkuzhy@gmail.com</a>
+            </li>
+          </ul>
+          </SlideText>
+          <div className="mt-8 overflow-hidden rounded-3xl shadow-sm">
+            <img
+              src="/images/contact-village.png"
+              alt="A quiet village lane in Kalkuzhy, Thrissur"
+              data-speed="0.88"
+              className="h-52 w-full scale-110 object-cover sm:h-64"
+            />
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.08}>
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-3xl bg-[#f6f3ee] p-5 shadow-sm ring-1 ring-stone-200/80 sm:p-8">
           <input
             type="text"
             name="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Your Name"
-            className="w-full p-3 rounded bg-white text-black outline-none focus:ring-2 focus:ring-teal-200"
+            placeholder="Your name"
+            className={fieldClass}
             required
             aria-label="Your Name"
           />
@@ -103,8 +142,8 @@ const Contact: React.FC = () => {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your Email"
-            className="w-full p-3 rounded bg-white text-black outline-none focus:ring-2 focus:ring-teal-200"
+            placeholder="Your email"
+            className={fieldClass}
             required
             aria-label="Your Email"
           />
@@ -113,9 +152,9 @@ const Contact: React.FC = () => {
             name="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Your Message"
+            placeholder="Your message"
             rows={5}
-            className="w-full p-3 rounded bg-white text-black outline-none focus:ring-2 focus:ring-teal-200"
+            className={fieldClass}
             required
             aria-label="Your Message"
           />
@@ -123,11 +162,12 @@ const Contact: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
-            className="w-full bg-white text-teal-600 font-bold py-3 rounded transition disabled:opacity-60 disabled:cursor-not-allowed hover:bg-gray-100"
+            className="w-full rounded-full bg-teal-800 py-3 font-semibold text-white transition hover:bg-teal-900 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubmitting ? 'Sending...' : 'Send Message'}
+            {isSubmitting ? 'Sending...' : 'Send message'}
           </button>
         </form>
+        </Reveal>
       </div>
     </section>
   );

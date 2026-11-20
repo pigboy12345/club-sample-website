@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 // Specifically look for client components, the use of hooks (like useState or useEffect), and any direct DOM manipulation
 function Home() {
   return (
-    <main className="pt-16">
+    <main>
       <Hero />
       <About />
       <MissionVision />
