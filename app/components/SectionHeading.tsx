@@ -43,7 +43,7 @@ export default function SectionHeading({
   };
 
   return (
-    <div className={`mb-10 sm:mb-14 ${centered ? "mx-auto max-w-2xl text-center" : "max-w-xl text-left"}`}>
+    <div className={`mb-10 sm:mb-14 ${centered ? "mx-auto max-w-2xl text-center" : "mx-auto max-w-2xl text-center sm:mx-0 sm:max-w-xl sm:text-left"}`}>
       {line(
         0,
         "p",
@@ -65,7 +65,7 @@ export default function SectionHeading({
           )
         : null}
       <span
-        className={`mt-5 block h-px w-16 bg-gradient-to-r from-teal-500 to-amber-400 ${centered ? "mx-auto" : ""}`}
+        className={`mt-5 block h-px w-16 bg-gradient-to-r from-teal-500 to-amber-400 ${centered ? "mx-auto" : "mx-auto sm:mx-0"}`}
         aria-hidden
       />
     </div>
