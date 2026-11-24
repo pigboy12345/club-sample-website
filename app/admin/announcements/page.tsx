@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import type { Announcement } from '../../../types';
 import { useRouter } from 'next/navigation';
+import ShareButton from '../../components/ShareButton';
 
 export default function AdminAnnouncements() {
   const router = useRouter();
@@ -195,6 +196,7 @@ export default function AdminAnnouncements() {
                 <p className="text-gray-900 mt-1 max-w-3xl whitespace-pre-line">{a.content}</p>
               </div>
               <div className="flex gap-2">
+                <ShareButton title={a.title} text={a.content} url={`/announcements/${a.id}`} />
                 <button className="px-3 py-1.5 rounded border border-gray-400 text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600" onClick={()=>{ setEditingId(a.id); setForm({ ...a }); }}>Edit</button>
                 <button className="px-3 py-1.5 rounded border border-gray-400 text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600" onClick={()=>togglePin(a.id, a.is_pinned)}>{a.is_pinned ? 'Unpin' : 'Pin'}</button>
                 <button className="px-3 py-1.5 rounded border border-gray-400 text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600" onClick={()=>del(a.id)}>Delete</button>

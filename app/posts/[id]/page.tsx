@@ -1,5 +1,7 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { Calendar, User, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabaseClient';
@@ -7,13 +9,6 @@ import PostImageCarousel from '../../components/PostImageCarousel';
 import Reveal from '../../components/Reveal';
 import { posts as staticPosts } from '../../data/posts';
 import type { Post, Category } from '../../../types';
-
-// Ensure this page is rendered dynamically for fresh data
-export const dynamic = 'force-dynamic';
-
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
 
 async function getPost(id: string): Promise<Post | null> {
   // Parse ID - handle both numeric and string IDs
@@ -40,14 +35,31 @@ if (!supabase) {
     return null;
   }
 
-  const { data, error } = await supabase
+  const result = await supabase
     .from('posts')
     .select('id,title,excerpt,content,author,date,image,images,video,category_id, categories ( id, name )')
     .eq('id', postId)
     .single();
+  let data = result.data as Record<string, any> | null;
 
-  if (error || !data) {
-    console.error('Error fetching post:', error?.message);
+  if (result.error) {
+    const fallback = await supabase
+      .from('posts')
+      .select('id,title,excerpt,content,author,date,image,category_id, categories ( id, name )')
+      .eq('id', postId)
+      .single();
+
+      if (fallback.error || !fallback.data) {
+        if (fallback.error?.message.toLowerCase().includes('fetch failed')) {
+          throw fallback.error;
+        }
+      return null;
+    }
+
+    data = { ...fallback.data, images: [], video: null };
+  }
+
+  if (!data) {
     return null;
   }
 
@@ -87,12 +99,47 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export default async function PostPage({ params }: PageProps) {
-  const { id } = await params;
-  const post = await getPost(id);
+export default function PostPage() {
+  const { id } = useParams<{ id: string }>();
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setLoadError(false);
+
+    getPost(id)
+      .then((loadedPost) => {
+        if (active) setPost(loadedPost);
+      })
+      .catch(() => {
+        if (active) setLoadError(true);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  if (loading) {
+    return <main className="min-h-screen bg-[#f6f3ee] pt-32 text-center text-stone-700">Loading story…</main>;
+  }
 
   if (!post) {
-    notFound();
+    return (
+      <main className="min-h-screen bg-[#f6f3ee] px-4 pt-32 text-center text-stone-700">
+        <p>{loadError ? 'This story could not be loaded. Check your connection and try again.' : 'Story not found.'}</p>
+        <Link href="/posts" className="mt-4 inline-flex items-center font-semibold text-teal-800 hover:text-teal-950">
+          <ArrowLeft className="mr-2 h-5 w-5" />
+          Back to posts
+        </Link>
+      </main>
+    );
   }
 
   const allImages = post.images && post.images.length > 0 ? [post.image!, ...post.images] : [post.image!];

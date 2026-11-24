@@ -4,6 +4,11 @@ import { supabase } from '../../../lib/supabaseClient';
 import type { GalleryItem } from '../../../types';
 import { useRouter } from 'next/navigation';
 import { uploadImageToBucket, DEFAULT_BUCKET } from '../../../lib/upload';
+import ShareButton from '../../components/ShareButton';
+
+function truncateDisplay(value: string, maxLength = 25) {
+  return value.length > maxLength ? `${value.slice(0, maxLength)}......` : value;
+}
 
 export default function AdminGallery() {
   const router = useRouter();
@@ -153,14 +158,15 @@ export default function AdminGallery() {
         ) : (
           items.map((g) => (
             <div key={g.id} className="border rounded p-4 bg-white flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-              <div className="flex items-center gap-3">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
                 <img src={g.src} alt={g.filename || ''} className="w-20 h-20 object-cover rounded" />
                 <div className="min-w-0">
-                  <div className="font-semibold text-gray-900 truncate">{g.filename || 'Untitled'}</div>
-                  <div className="text-xs text-gray-800 truncate">{g.src}</div>
+                  <div className="font-semibold text-gray-900" title={g.filename || 'Untitled'}>{truncateDisplay(g.filename || 'Untitled')}</div>
+                  <div className="text-xs text-gray-800" title={g.src}>{truncateDisplay(g.src)}</div>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex shrink-0 gap-2">
+                <ShareButton title={g.filename || 'Gallery image'} text="Photo from the Bappuji gallery" url={g.src} />
                 <button className="px-3 py-1.5 rounded border border-gray-400 text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600" onClick={()=>{ setEditingId(g.id); setForm({ ...g }); }}>Edit</button>
                 <button className="px-3 py-1.5 rounded border border-gray-400 text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600" onClick={()=>del(g.id)}>Delete</button>
               </div>

@@ -123,7 +123,7 @@ const About: React.FC = () => {
           <Reveal>
             <div className="overflow-hidden rounded-3xl shadow-md">
               <img
-                src="/images/about-forum.png"
+                src="/images/new-hero-village.jpeg"
                 alt="Members of the Bappuji community forum in Kalkuzhy"
                 data-speed="0.86"
                 className="h-72 w-full scale-110 object-cover sm:h-96"

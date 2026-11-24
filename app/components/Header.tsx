@@ -8,10 +8,10 @@ import NotificationBell from "./NotificationBell";
 
 const navItems = [
   { name: "Home", href: "/#home", id: "home" },
-  { name: "About", href: "/#about", id: "about" },
-  { name: "Mission", href: "/#mission", id: "mission" },
-  { name: "Activities", href: "/#activities", id: "activities" },
   { name: "Gallery", href: "/#gallery", id: "gallery" },
+  { name: "Activities", href: "/#activities", id: "activities" },
+  { name: "Mission & Vision", href: "/#mission", id: "mission" },
+  { name: "About", href: "/#about", id: "about" },
   { name: "Contact", href: "/#contact", id: "contact" },
 ];
 

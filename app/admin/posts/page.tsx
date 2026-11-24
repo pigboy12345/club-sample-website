@@ -5,6 +5,7 @@ import type { Post, Category } from "../../../types";
 import { useRouter } from "next/navigation";
 import { uploadImageToBucket, uploadVideoToBucket, DEFAULT_BUCKET } from "../../../lib/upload";
 import { X } from "lucide-react";
+import ShareButton from "../../components/ShareButton";
 
 interface UploadedImage {
   file?: File;
@@ -509,6 +510,7 @@ export default function AdminPosts() {
                 <p className="text-gray-900 mt-1 max-w-3xl whitespace-pre-line">{p.excerpt}</p>
               </div>
               <div className="flex gap-2">
+                <ShareButton title={p.title} text={p.excerpt || p.title} url={`/posts/${p.id}`} />
                 <button
                   className="px-3 py-1.5 rounded border border-gray-400 text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
                   onClick={() => {

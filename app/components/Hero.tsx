@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <img
-          src="/images/hero-village.png"
+          src="/images/new-hero-village.jpeg"
           alt=""
           data-speed="0.82"
           className="absolute left-0 top-[-10%] h-[120%] w-full object-cover"

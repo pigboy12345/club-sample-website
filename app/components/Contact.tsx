@@ -114,14 +114,6 @@ const Contact: React.FC = () => {
             </li>
           </ul>
           </SlideText>
-          <div className="mt-8 overflow-hidden rounded-3xl shadow-sm">
-            <img
-              src="/images/contact-village.png"
-              alt="A quiet village lane in Kalkuzhy, Thrissur"
-              data-speed="0.88"
-              className="h-52 w-full scale-110 object-cover sm:h-64"
-            />
-          </div>
         </Reveal>
 
         <Reveal delay={0.08}>

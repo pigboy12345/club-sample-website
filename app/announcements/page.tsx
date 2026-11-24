@@ -1,16 +1,16 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import { Bell, Calendar, Clock, Pin, AlertCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import { announcements as staticAnnouncements } from '../data/announcements';
 import type { Announcement } from '../../types';
 import PageBanner from '../components/PageBanner';
 import Reveal from '../components/Reveal';
+import Link from 'next/link';
 
-// Ensure this page is rendered dynamically on Vercel so new data appears immediately
-export const dynamic = 'force-dynamic';
-
-async function getAnnouncements(): Promise<Announcement[]> {
-  if (!supabase) return staticAnnouncements.map(a => ({
+function getStaticAnnouncements(): Announcement[] {
+  return staticAnnouncements.map(a => ({
     id: a.id,
     title: a.title,
     content: a.content,
@@ -20,22 +20,43 @@ async function getAnnouncements(): Promise<Announcement[]> {
     priority: a.priority as any,
     is_pinned: a.isPinned
   }));
-  const { data, error } = await supabase
-    .from('announcements')
-    .select('*')
-    .order('is_pinned', { ascending: false })
-    .order('date', { ascending: false })
-    .limit(50);
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.error('Supabase announcements error', error.message);
-    return [];
-  }
-  return data as Announcement[];
 }
 
-const Announcements = async () => {
-  const announcements = await getAnnouncements();
+async function getAnnouncements(): Promise<Announcement[]> {
+  if (!supabase) return getStaticAnnouncements();
+
+  try {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('is_pinned', { ascending: false })
+      .order('date', { ascending: false })
+      .limit(50);
+    if (error || !data) return getStaticAnnouncements();
+    return data as Announcement[];
+  } catch {
+    return getStaticAnnouncements();
+  }
+}
+
+const Announcements = () => {
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    getAnnouncements()
+      .then((loadedAnnouncements) => {
+        if (active) setAnnouncements(loadedAnnouncements);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const getTypeColor = (type: string) => {
     const colors = {
@@ -79,6 +100,14 @@ const Announcements = async () => {
       <div className="min-h-[40vh]">
         <section className="py-14 sm:py-20">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            {loading ? (
+              <div className="space-y-5" aria-label="Loading announcements">
+                {Array.from({ length: 3 }, (_, index) => (
+                  <div key={index} className="h-40 animate-pulse rounded-3xl bg-stone-200" />
+                ))}
+              </div>
+            ) : (
+              <>
             {/* Pinned Announcements */}
             {pinnedAnnouncements.length > 0 && (
               <div className="mb-12">
@@ -89,8 +118,9 @@ const Announcements = async () => {
                 <div className="space-y-5">
                   {pinnedAnnouncements.map((announcement, index) => (
                     <Reveal key={announcement.id} delay={index * 0.05}>
-                    <div
-                      className="rounded-3xl border-l-4 border-teal-600 bg-white p-5 shadow-sm ring-1 ring-stone-200/80 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:p-6"
+                    <Link
+                      href={`/announcements/${announcement.id}`}
+                      className="block rounded-3xl border-l-4 border-teal-600 bg-white p-5 shadow-sm ring-1 ring-stone-200/80 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:p-6"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center space-x-3">
@@ -117,7 +147,7 @@ const Announcements = async () => {
                             {announcement.time}
                         </div>
                       </div>
-                    </div>
+                    </Link>
                     </Reveal>
                   ))}
                 </div>
@@ -135,8 +165,9 @@ const Announcements = async () => {
                 )}
                 {regularAnnouncements.map((announcement, index) => (
                   <Reveal key={announcement.id} delay={index * 0.05}>
-                  <div
-                    className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200/80 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:p-6"
+                  <Link
+                    href={`/announcements/${announcement.id}`}
+                    className="block rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200/80 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:p-6"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center space-x-3">
@@ -162,11 +193,13 @@ const Announcements = async () => {
                         {announcement.time}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                   </Reveal>
                 ))}
               </div>
             </div>
+              </>
+            )}
           </div>
         </section>
       </div>

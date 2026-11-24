@@ -15,10 +15,10 @@ function Home() {
   return (
     <main>
       <Hero />
-      <About />
-      <MissionVision />
-      <Activities />
       <Gallery />
+      <Activities />
+      <MissionVision />
+      <About />
       <Contact />
     </main>
   );
